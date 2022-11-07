@@ -1,7 +1,7 @@
 package com.sinusface.pokedex.di
 
 import com.sinusface.pokedex.core.AppConstants.BASE_URL
-import com.sinusface.pokedex.data.PokemonAPI
+import com.sinusface.pokedex.data.remote.PokemonAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -10,14 +10,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
     @Provides
-    fun providerPokemonAPI(): PokemonAPI{
+    fun providerPokemonAPI(): PokemonAPI {
         return Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create())
             .baseUrl(BASE_URL)

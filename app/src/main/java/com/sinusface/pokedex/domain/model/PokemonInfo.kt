@@ -1,9 +1,6 @@
 package com.sinusface.pokedex.domain.model
 
-import com.squareup.moshi.JsonClass
-
-/*@JsonClass(generateAdapter = true)*/
-data class Pokemon(
+data class PokemonInfo(
     val base_experience: Int,
     val height: Int,
     val id: Int,

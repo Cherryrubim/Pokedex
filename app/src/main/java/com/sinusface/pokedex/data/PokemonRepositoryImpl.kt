@@ -1,7 +1,8 @@
 package com.sinusface.pokedex.data
 
-import com.sinusface.pokedex.domain.model.Pokemon
-import com.sinusface.pokedex.domain.model.PokemonResponseBody
+import com.sinusface.pokedex.data.remote.PokemonAPI
+import com.sinusface.pokedex.domain.model.PokemonInfo
+import com.sinusface.pokedex.data.remote.model.PokemonResponseBody
 import com.sinusface.pokedex.domain.repository.PokemonRepository
 import com.sinusface.pokedex.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +30,7 @@ class PokemonRepositoryImpl @Inject constructor(private val api: PokemonAPI) : P
 
     }
 
-    override fun getPokemon(name: String): Flow<Resource<Pokemon>> = flow {
+    override fun getPokemon(name: String): Flow<Resource<PokemonInfo>> = flow {
         /*emit(Resource.Loading())
         try {
             emit(Resource.Success(api.getPokemon(name)))
