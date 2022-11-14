@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             state = state.copy(isLoadingPager = it)
         },
         onSuccess = { item, newKey ->
-            state = state.copy(pokemonList = item.pokemonList)
+            state = state.copy(pokemonList = state.pokemonList + item.pokemonList)
         },
         onError = {
             state = state.copy(error = it?.message.toString())
