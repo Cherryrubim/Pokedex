@@ -21,7 +21,7 @@ class PokemonRepositoryImpl @Inject constructor(private val api: PokemonAPI) : P
 
         emit(Resource.Loading())
         try {
-            emit(Resource.Success(api.getPokemonList(offset)))
+            emit(Resource.Success(api.getPokemonList(offtset = offset)))
         } catch (e: IOException) {
             emit(Resource.Error(e))
         } catch (e: HttpException) {

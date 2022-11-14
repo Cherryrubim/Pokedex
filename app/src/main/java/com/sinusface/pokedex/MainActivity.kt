@@ -39,7 +39,6 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val listState = rememberLazyListState()
-
                     val isLastItemVisible by remember {
                         derivedStateOf {
                             listState.isLastItemVisible
@@ -50,24 +49,6 @@ class MainActivity : ComponentActivity() {
                         viewmodel.getPokemonPagers()
                         Log.i("List", "Last Item is Visible!!")
                     }
-
-/*                    val isLastItemFullyVisible by remember {
-                        derivedStateOf {
-                            listState.layoutInfo
-                                .visibleItemsInfo
-                                .any { it.key == lastIndexKey }.let { _isLastIndexVisible ->
-                                    if(_isLastIndexVisible){
-                                        val layoutInfo = listState.layoutInfo
-                                        val lastItemInfo = layoutInfo.visibleItemsInfo.lastOrNull() ?: return@let false
-
-                                        return@let lastItemInfo.size+lastItemInfo.offset == layoutInfo.viewportEndOffset
-                                    }else{
-                                        return@let false
-                                    }
-                                }
-                        }
-                    }*/
-
 
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
@@ -95,22 +76,7 @@ class MainActivity : ComponentActivity() {
 
 
                     }
-
-/*                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = listState
-                    ){
-
-                        items(100){
-                            PokemonItem(pokemonName = "Pikachu")
-                        }
-
-
-
-                    }*/
-
-
-                   // Log.i("MainActivity", viewmodel.state.toString())
+                    Log.i("MainActivity", viewmodel.state.pokemonList.toString())
                 }
             }
         }
