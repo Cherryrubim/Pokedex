@@ -1,27 +1,68 @@
 package com.sinusface.pokedex.presentation
 
-import androidx.compose.runtime.State
+import android.util.Log
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sinusface.pokedex.PokemonState
 import com.sinusface.pokedex.domain.repository.PokemonRepository
 import com.sinusface.pokedex.util.Resource
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import com.sinusface.pokedex.core.AppConstants.LIMIT_POKEMONS
+import com.sinusface.pokedex.data.paging.DefaultPaginator
+import com.sinusface.pokedex.data.paging.PaginatorImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.forEach
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRepository): ViewModel() {
 
-    private val  _state = mutableStateOf(PokemonState())
-    val state: State<PokemonState> = _state
+    var page = 0
+    var state by mutableStateOf(PokemonState())
+        private set
+
+    val paginator = PaginatorImpl(
+        initialKey = page,
+        onRequest = { page ->
+            pokemonRepository.getPokemonList(page)
+        },
+        onloading = {
+            state = state.copy(isLoadingPager = it)
+        },
+        onSuccess = { item, newKey ->
+            state = state.copy(pokemonList = item.pokemonList)
+        },
+        onError = {
+            state = state.copy(error = it?.message.toString())
+        },
+        getnextKey = { responseBody ->
+            /*Check if count is null and if reached to end elements*/
+            val count = responseBody.count
+            if (count != null) {
+                if (page * LIMIT_POKEMONS <= count) {
+                     page++
+                } else {
+                    Log.w("MainViewModel", "ResponseBody count is NULL.")
+                    return@PaginatorImpl null
+                }
+            } else {
+                return@PaginatorImpl null
+            }
+        }
+    )
 
     init {
-        getPokemonList()
+        //getPokemonList()
+        getPokemonPagers()
+    }
+
+    fun getPokemonPagers(){
+        viewModelScope.launch {
+            paginator.loadNextItems()
+        }
     }
 
     fun getPokemonList() {
@@ -31,16 +72,16 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                 when (result) {
 
                     is Resource.Success -> {
-                        _state.value =
+                        state =
                             PokemonState(pokemonList = result.data?.pokemonList ?: emptyList())
                     }
 
                     is Resource.Loading -> {
-                        _state.value = PokemonState(loading = true)
+                        state = PokemonState(isLoading = true)
                     }
 
                     is Resource.Error -> {
-                        _state.value = PokemonState(error = result.exception.toString())
+                        state = PokemonState(error = result.exception.toString())
                     }
                 }
             }
