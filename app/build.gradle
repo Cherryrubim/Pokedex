@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace 'com.sinusface.pokedex'
+    namespace 'com.cherryrubim.pokedex'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.sinusface.pokedex"
+        applicationId "com.cherryrubim.pokedex"
         minSdk 23
         targetSdk 33
         versionCode 1
