@@ -46,37 +46,47 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    if(isLastItemVisible && !state.isLoadingPager && state.pokemonList.isNotEmpty()){
+                    if(isLastItemVisible && !state.isLoadingPager){
                         Log.i("List", "Last Item is Visible!!")
                         viewmodel.getPokemonPagers()
                     }
 
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        state = listState
-                    ) {
+                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
 
-                        items(
-                            items = state.pokemonList.apply {
-                              Log.i(TAG, "LazyColumn List: ${this.toString()}")
-                            },
-                            key = { pokemon -> pokemon.name }) { pokemon ->
-                            PokemonItem(pokemonName = pokemon.name)
+                        if(state.isLoading){
+                            CircularProgressIndicator()
                         }
 
-                        if(state.isLoadingPager){
-                            item {
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(8.dp),
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    CircularProgressIndicator()
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = listState
+                        ) {
+
+                            items(
+                                items = state.pokemonList.apply {
+                                    Log.i(TAG, "LazyColumn List: ${this.toString()}")
+                                },
+                                key = { pokemon -> pokemon.name }) { pokemon ->
+                                PokemonItem(pokemonName = pokemon.name)
+                            }
+
+                            if(state.isLoadingPager){
+                                item {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(8.dp),
+                                        horizontalArrangement = Arrangement.Center
+                                    ) {
+                                        CircularProgressIndicator()
+                                    }
                                 }
                             }
                         }
+
                     }
+
+
                 }
             }
         }
@@ -106,11 +116,10 @@ fun DefaultPreview() {
 fun LazyListState.isLastItemVisible(): Boolean{
 
     val check = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1 && layoutInfo.totalItemsCount > 1 // <- Bug?, layoutInfo start with a element.
-    Log.i("LazyListState", "Check lastItemVisibility: $check")
+/*    Log.i("LazyListState", "Check lastItemVisibility: $check")
     Log.i("LazyListState", "LayoutInfo Visible Last Index: ${layoutInfo.visibleItemsInfo.lastOrNull()?.index}")
     Log.i("LazyListState", "LayoutInfo totalItems: ${ layoutInfo.totalItemsCount}")
-    Log.i("LazyListState", "LayoutInfo Last Item Key: ${ layoutInfo.visibleItemsInfo.lastOrNull()?.key}")
-    layoutInfo.viewportEndOffset
+    Log.i("LazyListState", "LayoutInfo Last Item Key: ${ layoutInfo.visibleItemsInfo.lastOrNull()?.key}")*/
     return check
 }
 

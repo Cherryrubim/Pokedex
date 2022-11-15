@@ -2,6 +2,7 @@ package com.cherryrubim.pokedex.data.paging
 
 import android.util.Log
 import com.cherryrubim.pokedex.util.Resource
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 
 class PaginatorImpl<Key, Item>(
@@ -26,6 +27,7 @@ class PaginatorImpl<Key, Item>(
         onRequest(currentKey!!).collect { result ->
             when (result) {
                 is Resource.Success -> {
+                    delay(8000)
                     result.data?.let {
                         currentKey = getNextKey(it)
                         onSuccess(it, currentKey!!)

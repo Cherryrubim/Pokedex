@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.core.AppConstants.LIMIT_POKEMONS
 import com.cherryrubim.pokedex.data.paging.PaginatorImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,7 +30,12 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             pokemonRepository.getPokemonList(page * LIMIT_POKEMONS)
         },
         onloading = {
-            state = state.copy(isLoadingPager = it)
+            if(state.pokemonList.isEmpty()){
+                state = state.copy(isLoading = it)
+            }else{
+                state = state.copy(isLoading = false)
+                state = state.copy(isLoadingPager = it)
+            }
         },
         onSuccess = { item, newKey ->
             state = state.copy(pokemonList = state.pokemonList + item.pokemonList)
