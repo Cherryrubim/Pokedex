@@ -1,5 +1,6 @@
 package com.cherryrubim.pokedex.data.remote.model
 
+import com.cherryrubim.pokedex.domain.model.Pokemon
 import com.squareup.moshi.Json
 
 /*@JsonClass(generateAdapter = true)*/

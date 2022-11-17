@@ -30,6 +30,9 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             pokemonRepository.getPokemonList(page * LIMIT_POKEMONS)
         },
         onloading = {
+            /*Restore Error state for Try Again*/
+            state = state.copy(isError = false)
+
             if(state.pokemonList.isEmpty()){
                 state = state.copy(isLoading = it)
             }else{
@@ -42,7 +45,7 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             Log.i("MainViewModel", state.pokemonList.toString())
         },
         onError = {
-            state = state.copy(error = it?.message.toString())
+            state = state.copy(isError = true)
         },
         getNextKey = { responseBody ->
             /*Check if count is null and if reached to end elements*/
@@ -87,7 +90,7 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                     }
 
                     is Resource.Error -> {
-                        state = PokemonState(error = result.exception.toString())
+                       // state = PokemonState(error = result.exception.toString())
                     }
                 }
             }

@@ -27,6 +27,7 @@ class PaginatorImpl<Key, Item>(
         onRequest(currentKey!!).collect { result ->
             when (result) {
                 is Resource.Success -> {
+                    //* Delay is only use for debug
                     delay(8000)
                     result.data?.let {
                         currentKey = getNextKey(it)
@@ -41,9 +42,9 @@ class PaginatorImpl<Key, Item>(
                     Log.i("Paginator", "onRequest loading...")
                 }
                 is Resource.Error -> {
+                    onloading(false)
                     onError(result.exception)
                     isMakingRequest = false
-                    onloading(false)
                     Log.e("Paginator", "onRequest Error!! Next Key is: ${result.exception}")
                 }
             }

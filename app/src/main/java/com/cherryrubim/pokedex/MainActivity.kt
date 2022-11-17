@@ -2,11 +2,13 @@ package com.cherryrubim.pokedex
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -22,6 +24,9 @@ import com.cherryrubim.pokedex.presentation.MainViewModel
 import com.cherryrubim.pokedex.ui.theme.PokedexTheme
 import dagger.hilt.android.AndroidEntryPoint
 import androidx.compose.runtime.getValue
+import com.cherryrubim.pokedex.presentation.component.TryAgain
+import com.cherryrubim.pokedex.presentation.feature.PokemonItem
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
@@ -39,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
 
-                    val listState = rememberLazyListState()
+                    val listState = rememberLazyGridState()
                     val isLastItemVisible by remember {
                         derivedStateOf {
                             listState.isLastItemVisible()
@@ -57,7 +62,47 @@ class MainActivity : ComponentActivity() {
                             CircularProgressIndicator()
                         }
 
-                        LazyColumn(
+                        LazyVerticalGrid(
+                            modifier = Modifier.fillMaxSize(),
+                            state = listState,
+                            columns = GridCells.Fixed(2),
+                            contentPadding = PaddingValues(20.dp),
+                            horizontalArrangement = Arrangement.spacedBy(15.dp),
+                            verticalArrangement = Arrangement.spacedBy(15.dp)
+                        ) {
+                            itemsIndexed(
+                                state.pokemonList,
+                                key = { index, item -> item.name }
+                            ){ index, item ->
+                                PokemonItem(index = index+1, pokemon = item)
+                            }
+                            if(state.isLoadingPager){
+                                item {
+                                    Spacer(modifier = Modifier.size(10.dp))
+                                }
+                            }
+                        }
+                        
+                        if(state.isLoadingPager){
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(8.dp)
+                                    .align(Alignment.BottomCenter),
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                CircularProgressIndicator()
+                            }
+                        }
+
+                        if(state.isError){
+                            Log.i(TAG, "StateError")
+                            TryAgain(onClick = {
+                                Log.i(TAG, "TryAgain!!")
+                            })
+                        }
+
+                        /*LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             state = listState
                         ) {
@@ -82,7 +127,7 @@ class MainActivity : ComponentActivity() {
                                     }
                                 }
                             }
-                        }
+                        }*/
 
                     }
 
@@ -93,7 +138,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
+/*@Composable
 fun PokemonItem(pokemonName: String){
     Box(
         modifier = Modifier
@@ -103,14 +148,20 @@ fun PokemonItem(pokemonName: String){
     ) {
         Text(text = pokemonName, modifier = Modifier.align(Alignment.CenterStart))
     }
-}
+}*/
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     PokedexTheme {
-        PokemonItem(pokemonName = "Pikachu")
+        //PokemonItem(pokemonName = "Pikachu")
     }
+}
+
+
+fun LazyGridState.isLastItemVisible(): Boolean{
+    val check = layoutInfo.visibleItemsInfo.lastOrNull()?.index == layoutInfo.totalItemsCount - 1 && layoutInfo.totalItemsCount > 1
+    return check
 }
 
 fun LazyListState.isLastItemVisible(): Boolean{

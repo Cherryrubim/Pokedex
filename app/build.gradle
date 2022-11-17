@@ -93,6 +93,10 @@ dependencies {
     implementation("androidx.paging:paging-runtime:3.1.1")
     implementation("androidx.paging:paging-compose:1.0.0-alpha17")
 
+    //Landscapist
+    implementation "com.github.skydoves:landscapist-coil:$landscapist_version"
+    implementation "com.github.skydoves:landscapist-palette:$landscapist_version"
+
 
 
 }
