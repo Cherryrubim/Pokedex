@@ -19,8 +19,7 @@ class PaginatorImpl<Key, Item>(
     override suspend fun loadNextItems() {
 
         /* Prevent another request if there is one in progress
-         * Prevent request if currentKey is null.
-         */
+         * Prevent request if currentKey is null. */
         if (isMakingRequest && currentKey == null) return
 
         isMakingRequest = true
@@ -28,7 +27,7 @@ class PaginatorImpl<Key, Item>(
             when (result) {
                 is Resource.Success -> {
                     //* Delay is only use for debug
-                    delay(8000)
+                    delay(5000)
                     result.data?.let {
                         currentKey = getNextKey(it)
                         onSuccess(it, currentKey!!)

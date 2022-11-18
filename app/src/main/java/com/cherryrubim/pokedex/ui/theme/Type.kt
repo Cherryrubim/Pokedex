@@ -16,14 +16,14 @@ val Raleway = FontFamily(
     Font(R.font.raleway_bold, weight = FontWeight.Bold)
 )
 
-/*val NotoColorEmoji = FontFamily(
+val NotoColorEmoji = FontFamily(
     Font(R.font.notocoloremoji_regular)
-)*/
+)
 
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = Raleway,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,

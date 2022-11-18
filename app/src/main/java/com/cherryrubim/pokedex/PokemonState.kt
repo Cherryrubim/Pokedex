@@ -4,7 +4,8 @@ import com.cherryrubim.pokedex.domain.model.Pokemon
 
 data class PokemonState(
     val pokemonList: List<Pokemon> = emptyList(),
-    val isLoading: Boolean = false,
-    val isLoadingPager: Boolean = false,
-    val isError: Boolean = false,
+    val isLoadingInEmptyList: Boolean = false, // <- Loading for EmptyList
+    val isLoadingNextPage: Boolean = false, // <- Loading for NextPage
+    val isErrorInEmptyList: Boolean = false, // <- Error for EmptyList
+    val isErrorPageNextRequest: Boolean = false, // <- Error for NextResquest
 )

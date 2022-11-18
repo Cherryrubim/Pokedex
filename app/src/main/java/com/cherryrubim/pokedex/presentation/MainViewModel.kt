@@ -7,12 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cherryrubim.pokedex.PokemonState
 import com.cherryrubim.pokedex.domain.repository.PokemonRepository
-import com.cherryrubim.pokedex.util.Resource
 import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.core.AppConstants.LIMIT_POKEMONS
 import com.cherryrubim.pokedex.data.paging.PaginatorImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,13 +29,15 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
         },
         onloading = {
             /*Restore Error state for Try Again*/
-            state = state.copy(isError = false)
+            state = state.copy(isErrorInEmptyList = false)
+            state = state.copy(isErrorPageNextRequest = false)
 
+            /*Check for Loading types*/
             if(state.pokemonList.isEmpty()){
-                state = state.copy(isLoading = it)
+                state = state.copy(isLoadingInEmptyList = it) // <- Loading for EmptyList.
             }else{
-                state = state.copy(isLoading = false)
-                state = state.copy(isLoadingPager = it)
+                state = state.copy(isLoadingInEmptyList = false)
+                state = state.copy(isLoadingNextPage = it)  // <- Loading for Resquest Page.
             }
         },
         onSuccess = { item, newKey ->
@@ -45,7 +45,11 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             Log.i("MainViewModel", state.pokemonList.toString())
         },
         onError = {
-            state = state.copy(isError = true)
+            if(state.pokemonList.isEmpty()){
+                state = state.copy(isErrorInEmptyList = true) // <- Show TryAgain Composable if an error ocurred.
+            }else{
+                state = state.copy(isErrorPageNextRequest = true) // <- An error ocurred when resquest New Pages
+            }
         },
         getNextKey = { responseBody ->
             /*Check if count is null and if reached to end elements*/
@@ -65,16 +69,16 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
     )
 
     init {
-        getPokemonPagers()
+        getPokemonList()
     }
 
-    fun getPokemonPagers(){
+    fun getPokemonList(){
         viewModelScope.launch {
             paginator.loadNextItems()
         }
     }
 
-    fun getPokemonList() {
+    /*fun getPokemonList() {
         viewModelScope.launch {
             pokemonRepository.getPokemonList(0).collect { result ->
 
@@ -95,5 +99,5 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                 }
             }
         }
-    }
+    }*/
 }

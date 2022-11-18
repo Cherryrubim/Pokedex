@@ -24,6 +24,7 @@ import com.cherryrubim.pokedex.R
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 
+@Preview
 @Composable
 fun TryAgain(onClick: () -> Unit = {}) {
 
