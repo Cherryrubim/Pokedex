@@ -8,9 +8,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.cherryrubim.pokedex.presentation.navigation.PokedexNavGraph
+import com.cherryrubim.pokedex.presentation.screen.NavGraph
+import com.cherryrubim.pokedex.presentation.screen.NavGraphs
 import com.cherryrubim.pokedex.ui.theme.PokedexTheme
 import dagger.hilt.android.AndroidEntryPoint
 import com.cherryrubim.pokedex.presentation.screen.pokemonlist.PokemonList
+import com.ramcosta.composedestinations.DestinationsNavHost
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,7 +29,13 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    PokemonList()
+                    
+                    DestinationsNavHost(navGraph = NavGraphs.root)
+
+
+                    /*Navigation Compose*/
+                    /*val navHostController = rememberNavController()
+                    PokedexNavGraph(navHostController)*/
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemonlist
 
+import android.nfc.Tag
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -23,10 +24,22 @@ import com.cherryrubim.pokedex.presentation.screen.PokemonItem
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.graphics.toArgb
+import com.cherryrubim.pokedex.domain.model.Pokemon
+import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonInfoDestination
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonInfo
 import com.cherryrubim.pokedex.util.isLastItemVisible
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@Destination(start = true)
 @Composable
-fun PokemonList(viewmodel: MainViewModel = hiltViewModel()) {
+fun PokemonList(
+    navigator: DestinationsNavigator,
+    viewmodel: MainViewModel = hiltViewModel(),
+    //Navigation Compose
+    // onNavigationToPokemonInfo: (Int) -> Unit
+) {
 
     val TAG = "PokemonList"
     val state = viewmodel.state
@@ -39,8 +52,7 @@ fun PokemonList(viewmodel: MainViewModel = hiltViewModel()) {
 
     /*Check conditional for New Request*/
     if(isLastItemVisible && !state.isLoadingNextPage && !state.isErrorPageNextRequest){
-        Log.i(TAG, "State isError: ${state.isErrorPageNextRequest}")
-        Log.i("List", "Last Item is Visible!!")
+        Log.i(TAG, "Last Item is Visible!!")
         viewmodel.getPokemonList()
     }
 
@@ -66,7 +78,17 @@ fun PokemonList(viewmodel: MainViewModel = hiltViewModel()) {
                 state.pokemonList,
                 key = { index, item -> item.name }
             ){ index, item ->
-                PokemonItem(index = index+1, pokemon = item)
+                PokemonItem(
+                    index = index+1,
+                    pokemon = item,
+                    onClick = { pokemon, color ->
+                        navigator.navigate(PokemonInfoDestination(pokemon = pokemon, color = color.toArgb()))
+                       // navigator.navigate(PokemonInfoDestination(pokemon, color))
+
+                    }
+                    //Navigation Compose
+                    //onClick = onNavigationToPokemonInfo
+                )
             }
 
             if(state.isLoadingNextPage){

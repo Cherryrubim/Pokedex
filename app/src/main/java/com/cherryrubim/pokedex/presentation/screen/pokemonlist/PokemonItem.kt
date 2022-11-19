@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -31,8 +32,12 @@ import com.skydoves.landscapist.palette.PalettePlugin
 @Composable
 fun PokemonItem(
     //@PreviewParameter(SamplePokemonProvider::class)
-     index: Int,
-    pokemon: Pokemon
+    index: Int?,
+    pokemon: Pokemon,
+    onClick: (Pokemon, Color) -> Unit
+
+    //Navigation Compose
+    //onClick: (Int) -> Unit
 ) {
 
     val defaultDominanColor = MaterialTheme.colorScheme.surfaceVariant
@@ -53,8 +58,9 @@ fun PokemonItem(
         modifier = Modifier
             .aspectRatio(3F / 4F)
             .clip(RoundedCornerShape(15.dp))
-            .clickable { }
             .drawBehind { drawRect(color = dominanColor.value) }
+            .clickable { onClick(pokemon, dominanColor.value) }
+            //.clickable { index?.let { onClick(it) } }
     ) {
 
         Column(
@@ -121,40 +127,9 @@ private fun TextCard(
     )
 }
 
-/*@Preview(device = Devices.NEXUS_5)*/
-@Composable
-private fun TestList(
-    //@PreviewParameter(SamplePokemonProvider::class)
-    pokemon: Pokemon
-){
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
-        contentPadding = PaddingValues(20.dp),
-        horizontalArrangement = Arrangement.spacedBy(15.dp),
-        verticalArrangement = Arrangement.spacedBy(15.dp)
-    ) {
-        items(100) {
-            PokemonItem(0,pokemon)
-        }
-    }
-}
-
 /*class SamplePokemonProvider : PreviewParameterProvider<Pokemon> {
     override val values: Sequence<Pokemon> =
         sequenceOf(
             Pokemon("Ivasaur", "")
         )
 }*/
-
-fun idk(){
-    val idk = 17
-    idk.padZero()
-}
-
-fun Int.padZero(): String {
-    return if (this < 10) {
-        "0$this"
-    } else {
-        this.toString()
-    }
-}
