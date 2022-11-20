@@ -10,6 +10,7 @@ import com.cherryrubim.pokedex.domain.repository.PokemonRepository
 import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.core.AppConstants.LIMIT_POKEMONS
 import com.cherryrubim.pokedex.data.paging.PaginatorImpl
+import com.cherryrubim.pokedex.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

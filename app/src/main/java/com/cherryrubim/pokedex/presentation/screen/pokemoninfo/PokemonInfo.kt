@@ -1,24 +1,47 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemoninfo
 
-import android.graphics.Color
+import android.util.Log
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.cherryrubim.pokedex.domain.model.Pokemon
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
 @Composable
 fun PokemonInfo(
-    pokemon: Pokemon, color: Int = 0
+    pokemon: Pokemon,
+    color: Int = 0,
+    viewModel: PokemonInfoViewModel = hiltViewModel()
 ) {
 
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment =  Alignment.Center){
-        Text(text = pokemon.name, fontSize = 60.sp)
+    val state = viewModel.state
+
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment =  Alignment.Center
+    ){
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            state.pokemonInfo?.let { pokemonInfo ->
+                with(pokemonInfo) {
+                    Text(text = id.toString(), fontSize = 40.sp)
+                    Text(text = name, fontSize = 40.sp)
+                    Text(text = weight.toString(), fontSize = 40.sp)
+                    Text(text = height.toString(), fontSize = 40.sp)
+                }
+            }
+        }
     }
 
 }

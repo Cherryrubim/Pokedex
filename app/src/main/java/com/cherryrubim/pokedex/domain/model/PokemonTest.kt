@@ -1,10 +1,6 @@
 package com.cherryrubim.pokedex.domain.model
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class PokemonInfo(
+data class PokemonTest(
     val id: Int,
     val name: String,
     val weight: Int,
@@ -12,4 +8,4 @@ data class PokemonInfo(
     val species: Species,
     val stats: List<StatXX>,
     val types: List<TypeXX>,
-): Parcelable
+)

@@ -7,8 +7,8 @@ import kotlinx.parcelize.Parcelize
 /*@JsonClass(generateAdapter = true)*/
 @Parcelize
 data class Pokemon(
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "url") val url: String
+    @field:Json(name = "name") val name: String = "",
+    @field:Json(name = "url") val url: String = ""
 ): Parcelable{
     fun getImageUrl(): String {
         val index = url.split("/".toRegex()).dropLast(1).last()
