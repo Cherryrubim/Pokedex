@@ -15,12 +15,20 @@ import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
+import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
+import com.cherryrubim.pokedex.util.ResultZip
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.zip
 
 @HiltViewModel
 class PokemonInfoViewModel @Inject constructor(
     private val pokemonRepository: PokemonRepository,
     private val savedStateHandle: SavedStateHandle
-    ) : ViewModel() {
+) : ViewModel() {
+
+    val TAG = "PokemonInfoViewModel"
 
     var state by mutableStateOf(PokemonInfoState())
         private set
@@ -29,28 +37,44 @@ class PokemonInfoViewModel @Inject constructor(
         getPokemon()
     }
 
-    fun getPokemon(){
-
+    fun getPokemon() {
         savedStateHandle.get<Pokemon>("pokemon")?.name?.let { pokemonName ->
-
+            Log.i(TAG, "SavedStateHandle: $pokemonName")
             viewModelScope.launch {
-                pokemonRepository.getPokemon(pokemonName).collect{ result ->
 
-                    when (result) {
-                        is Resource.Success -> {
-                            Log.i("PokemonInfoViewModel", "Success: ${result.data.toString()}")
-                            state = state.copy(pokemonInfo = result.data)
-                        }
+                val pokemonInfoFlow = pokemonRepository.getPokemon(pokemonName)
+                val pokemonDescriptionFlow = pokemonRepository.getPokemonDescription(pokemonName)
 
-                        is Resource.Loading -> {
-                            state = state.copy(isLoading = true)
-                        }
+                Log.i(TAG, "State Loading PreFlow: ${state.isLoading}")
+                state = state.copy(isLoading = true)
+                pokemonInfoFlow.zip(pokemonDescriptionFlow) { pokemonInfoResult, pokemonDescriptionResult ->
+                    Log.i(TAG, "State Loading in Flow: ${state.isLoading}")
+                    return@zip ResultZip(pokemonInfoResult, pokemonDescriptionResult)
+                }
+                    .catch { e ->
+                        Log.e(TAG, e.message.toString())
+                        state = state.copy(isError = true)
+                    }
+                    .collect { resultZip ->
+                        Log.i(TAG, "State Loading InCollect: ${state.isLoading}")
+                        val pokemonInfoResource = resultZip.componentA
+                        val pokemonDescriptionResource = resultZip.ComponentB
 
-                        is Resource.Error -> {
-                            state = state.copy(isError = true)
+                        if (pokemonInfoResource is Resource.Success &&
+                            pokemonDescriptionResource is Resource.Success
+                        ) {
+
+                            state = PokemonInfoState(
+                                pokemonInfo = pokemonInfoResource.data,
+                                pokemonDescription = pokemonDescriptionResource.data
+                            )
+                            /*state = state.copy(
+                                pokemonInfo = pokemonInfoResource.data, isLoading = false
+                                //pokemonDescription = pokemonDescriptionResource.data
+                            )*/
+                            Log.i(TAG, "State Loading Success Set New State: ${state.isLoading}")
                         }
                     }
-                }
             }
         }
     }

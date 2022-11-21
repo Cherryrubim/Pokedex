@@ -26,7 +26,7 @@ class PaginatorImpl<Key, Item>(
         onRequest(currentKey!!).collect { result ->
             when (result) {
                 is Resource.Success -> {
-                    //* Delay is only use for debug
+                    /* Delay is only use for debug!!!!!!! */
                     delay(5000)
                     result.data?.let {
                         currentKey = getNextKey(it)

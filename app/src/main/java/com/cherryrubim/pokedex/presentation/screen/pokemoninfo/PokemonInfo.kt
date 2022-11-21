@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cherryrubim.pokedex.domain.model.Pokemon
+import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.ramcosta.composedestinations.annotation.Destination
 
 @Destination
@@ -28,6 +30,12 @@ fun PokemonInfo(
         modifier = Modifier.fillMaxSize(),
         contentAlignment =  Alignment.Center
     ){
+        /*Log.i("PokemonInfo", "State Loading: ${state.isLoading}")*/
+        Log.i("PokemonInfo", "State: ${state}")
+        if(state.isLoading){
+            CircularProgressIndicator()
+        }
+
         Column(
             modifier = Modifier.fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -41,6 +49,21 @@ fun PokemonInfo(
                     Text(text = height.toString(), fontSize = 40.sp)
                 }
             }
+
+            state.pokemonDescription?.let { speciesInfo ->
+                with(speciesInfo){
+                    val pokemonDescription = flavor_text_entries.find { flavorTextEntry ->
+                        flavorTextEntry.language.name == "en"
+                    }
+
+                    pokemonDescription?.let {flavorTextEntry ->
+                        val description = flavorTextEntry.flavor_text
+                        Text(text = description, fontSize = 16.sp, color = SnolaxColor)
+                    }
+
+                }
+            }
+
         }
     }
 

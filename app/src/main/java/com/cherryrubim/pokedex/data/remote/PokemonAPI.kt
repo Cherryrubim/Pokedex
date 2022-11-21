@@ -4,6 +4,7 @@ import com.cherryrubim.pokedex.core.AppConstants.LIMIT_POKEMONS
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.data.remote.model.PokemonResponseBody
 import com.cherryrubim.pokedex.domain.model.Species
+import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -25,7 +26,7 @@ interface PokemonAPI {
     @GET("pokemon-species/{name}")
     suspend fun getPokemonDescription(
         @Path("name") name: String
-    ): Species
+    ): SpeciesInfo
 
 
 }
