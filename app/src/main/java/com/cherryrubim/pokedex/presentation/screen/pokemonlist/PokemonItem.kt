@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
@@ -88,13 +89,46 @@ fun PokemonItem(
                     }
                 },
                 component = rememberImageComponent {
-                    +PalettePlugin { palette ->
+/*                    +PalettePlugin { palette ->
                         palette.dominantSwatch?.rgb?.let { colorValue ->
                             dominanColor.value = Color(colorValue)
                             textColor.value = Color(colorValue).generateOnColor()
                             Log.i("CoilImage", "Call Executer Palette!!!")
                         }
-                    }
+                    }*/
+                    +PalettePlugin(
+                        imageModel = pokemon.getImageUrl(),
+                        useCache = true, // use cache strategies for the same image model.
+                        /*interceptor = {
+                            it.addFilter { rgb, hsl ->
+                                // here edit to add the filter colors.
+                                Log.i("CoilImage", "IMAGE: $index, HSL : ${rgb}")
+                                false
+                            }
+                        },*/
+                        paletteLoadedListener = { palette ->
+
+
+
+                            palette.dominantSwatch?.rgb?.let { colorValue ->
+
+/*                                if(Color(colorValue).luminance() < 0.1){
+                                    palette.lightVibrantSwatch?.rgb?.let {lightVibrantColor ->
+                                        dominanColor.value = Color(lightVibrantColor)
+                                        textColor.value = Color(lightVibrantColor).generateOnColor()
+                                    }
+                                }else{
+                                    dominanColor.value = Color(colorValue)
+                                    textColor.value = Color(colorValue).generateOnColor()
+                                }*/
+
+                                dominanColor.value = Color(colorValue)
+                                textColor.value = Color(colorValue).generateOnColor()
+                                val luminance = Color(colorValue).luminance()
+                                Log.i("CoilImage", "Index: $index, Luminance: $luminance")
+                            }
+                        }
+                    )
                 }
             )
             /*Box(

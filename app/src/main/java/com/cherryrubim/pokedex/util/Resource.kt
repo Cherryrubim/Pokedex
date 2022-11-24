@@ -5,5 +5,4 @@ sealed class Resource<out T>{
     class Loading<out T>: Resource<T>()
     data class Error<out T>(val exception: Exception): Resource<T>()
 }
-
 data class ResultZip<out T, E>(val componentA: T?, val ComponentB: E?)

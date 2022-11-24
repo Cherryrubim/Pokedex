@@ -56,22 +56,16 @@ class PokemonInfoViewModel @Inject constructor(
                         state = state.copy(isError = true)
                     }
                     .collect { resultZip ->
-                        Log.i(TAG, "State Loading InCollect: ${state.isLoading}")
                         val pokemonInfoResource = resultZip.componentA
                         val pokemonDescriptionResource = resultZip.ComponentB
 
                         if (pokemonInfoResource is Resource.Success &&
                             pokemonDescriptionResource is Resource.Success
                         ) {
-
                             state = PokemonInfoState(
                                 pokemonInfo = pokemonInfoResource.data,
                                 pokemonDescription = pokemonDescriptionResource.data
                             )
-                            /*state = state.copy(
-                                pokemonInfo = pokemonInfoResource.data, isLoading = false
-                                //pokemonDescription = pokemonDescriptionResource.data
-                            )*/
                             Log.i(TAG, "State Loading Success Set New State: ${state.isLoading}")
                         }
                     }
