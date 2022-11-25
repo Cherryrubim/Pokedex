@@ -32,7 +32,7 @@ import com.skydoves.landscapist.palette.PalettePlugin
 @Composable
 fun PokemonItem(
     //@PreviewParameter(SamplePokemonProvider::class)
-    index: Int?,
+    index: Int?, // <-Must Fix null!!!!
     pokemon: Pokemon,
     onClick: (Pokemon, Color) -> Unit
 
@@ -98,21 +98,12 @@ fun PokemonItem(
                     }*/
                     +PalettePlugin(
                         imageModel = pokemon.getImageUrl(),
-                        useCache = true, // use cache strategies for the same image model.
-                        /*interceptor = {
-                            it.addFilter { rgb, hsl ->
-                                // here edit to add the filter colors.
-                                Log.i("CoilImage", "IMAGE: $index, HSL : ${rgb}")
-                                false
-                            }
-                        },*/
+                        useCache = true,
                         paletteLoadedListener = { palette ->
-
-
-
                             palette.dominantSwatch?.rgb?.let { colorValue ->
 
-/*                                if(Color(colorValue).luminance() < 0.1){
+                                //The solution must be Test. (????
+                                if(Color(colorValue).luminance() < 0.1){
                                     palette.lightVibrantSwatch?.rgb?.let {lightVibrantColor ->
                                         dominanColor.value = Color(lightVibrantColor)
                                         textColor.value = Color(lightVibrantColor).generateOnColor()
@@ -120,12 +111,12 @@ fun PokemonItem(
                                 }else{
                                     dominanColor.value = Color(colorValue)
                                     textColor.value = Color(colorValue).generateOnColor()
-                                }*/
+                                }
 
-                                dominanColor.value = Color(colorValue)
+/*                                dominanColor.value = Color(colorValue)
                                 textColor.value = Color(colorValue).generateOnColor()
                                 val luminance = Color(colorValue).luminance()
-                                Log.i("CoilImage", "Index: $index, Luminance: $luminance")
+                                Log.i("CoilImage", "Index: $index, Luminance: $luminance")*/
                             }
                         }
                     )
