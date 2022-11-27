@@ -82,9 +82,7 @@ fun PokemonList(
                     index = index+1,
                     pokemon = item,
                     onClick = { pokemon, color ->
-                        navigator.navigate(PokemonInfoDestination(pokemon = pokemon, color = color.toArgb()))
-                       // navigator.navigate(PokemonInfoDestination(pokemon, color))
-
+                        navigator.navigate(PokemonInfoDestination(index = index+1, pokemon = pokemon, color = color.toArgb()))
                     }
                     //Navigation Compose
                     //onClick = onNavigationToPokemonInfo

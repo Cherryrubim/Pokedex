@@ -78,27 +78,4 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             paginator.loadNextItems()
         }
     }
-
-    /*fun getPokemonList() {
-        viewModelScope.launch {
-            pokemonRepository.getPokemonList(0).collect { result ->
-
-                when (result) {
-
-                    is Resource.Success -> {
-                        state =
-                            PokemonState(pokemonList = result.data?.pokemonList ?: emptyList())
-                    }
-
-                    is Resource.Loading -> {
-                        state = PokemonState(isLoading = true)
-                    }
-
-                    is Resource.Error -> {
-                       // state = PokemonState(error = result.exception.toString())
-                    }
-                }
-            }
-        }
-    }*/
 }

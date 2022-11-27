@@ -2,25 +2,24 @@ package com.cherryrubim.pokedex.presentation.screen.pokemoninfo
 
 import android.util.Log
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,13 +27,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.core.text.trimmedLength
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cherryrubim.pokedex.R
 import com.cherryrubim.pokedex.domain.model.Pokemon
+import com.cherryrubim.pokedex.domain.model.PokemonInfo
+import com.cherryrubim.pokedex.domain.model.idk.FlavorTextEntry
+import com.cherryrubim.pokedex.domain.model.idk.Language
+import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
+import com.cherryrubim.pokedex.domain.model.idk.Version
 import com.cherryrubim.pokedex.ui.theme.Raleway
+import com.cherryrubim.pokedex.ui.theme.SnolaxBackgroundColor
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.cherryrubim.pokedex.util.generateOnColor
 import com.ramcosta.composedestinations.annotation.Destination
+import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.palette.PalettePlugin
@@ -42,26 +49,42 @@ import com.skydoves.landscapist.palette.PalettePlugin
 @Destination
 @Composable
 fun PokemonInfo(
-    pokemon: Pokemon,
+    index: Int = 0,
+    pokemon: Pokemon = Pokemon(),
     color: Int = 0,
     viewModel: PokemonInfoViewModel = hiltViewModel()
 ) {
+    val TAG = "PokemonInfo"
 
+    //Only Debug use
+/*    val speciesInfo = SpeciesInfo(flavor_text_entries = listOf(
+        FlavorTextEntry(
+            flavor_text = stringResource(id = R.string.lorem_ipsum),
+            language = Language("en"),
+            version =  Version("Diamond")
+        )))
+
+    val state = PokemonInfoState(pokemonDescription = speciesInfo)*/
     val state = viewModel.state
+
     val horizontalPadding: Dp = 20.dp
-    val topBarPaddingValues = PaddingValues(horizontal = 10.dp, vertical = 15.dp)
+    val topBarPaddingValues = PaddingValues(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 8.dp)
     val modifier: Modifier = Modifier.padding(horizontal = horizontalPadding)
 
     val colorText = remember {
         mutableStateOf(Color.Black)
     }
 
+    val backgroundColor = remember{
+        mutableStateOf(SnolaxBackgroundColor)
+    }
+
     val flavorTextEntry = remember(state.pokemonDescription) {
+        Log.i(TAG, "Call Remember FlavorText")
         if (state.pokemonDescription != null) {
             with(state.pokemonDescription) {
                 val pokemonDescription =
-                    flavor_text_entries.find { flavorTextEntry -> flavorTextEntry.language.name == "en" }
-
+                    flavor_text_entries.find { flavorTextEntry -> flavorTextEntry.language.name == "es" && flavorTextEntry.version.name == "sword" }
                 if (pokemonDescription != null) {
                     return@remember pokemonDescription
                 } else {
@@ -76,186 +99,94 @@ fun PokemonInfo(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF93C9AD))
-            .scrollable(orientation = Orientation.Vertical, state = rememberScrollState())
+            .drawBehind { drawRect(color = backgroundColor.value) }
     ) {
-
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .scrollable(orientation = Orientation.Vertical, state = rememberScrollState())
+                .verticalScroll(rememberScrollState())
         ) {
 
-           // Spacer(modifier = Modifier.size(12.dp))
+            TopBar(
+                modifier = Modifier.padding(paddingValues = topBarPaddingValues),
+                color = colorText.value
+            )
 
-            TopBar(modifier = Modifier.padding(paddingValues = topBarPaddingValues))
+            IndexAndPokemonTypeRow(
+                modifier = modifier,
+                index = index,
+                colorIndex = colorText.value
+            )
+            NameAndPokemonType2Row(
+                modifier = modifier,
+                name = pokemon.name.capitalize(),
+                colorName = colorText.value
+            )
 
-           // Spacer(modifier = Modifier.size(12.dp))
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(82.dp, 5.dp)
+                    .aspectRatio(1F / 1F)
+            ) {
 
-            state.pokemonInfo?.let { pokemonInfo ->
-                with(pokemonInfo) {
-                    IndexAndPokemonTypeRow(
-                        modifier = modifier,
-                        index = id,
-                        colorIndex = colorText.value
-                    )
-                    NameAndPokemonType2Row(
-                        modifier = modifier,
-                        name = name,
-                        colorName = colorText.value
-                    )
-
-                    CoilImage(
-                        modifier = Modifier
-                            .padding(horizontal = 20.dp, vertical = 8.dp)
-                            .aspectRatio(1F / 1F),
-                        imageModel = { pokemon.getImageUrl() },
-                        previewPlaceholder = R.drawable.ivasaur,
-                        loading = {
-                            Box(modifier = Modifier.matchParentSize()) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.align(Alignment.Center)
-                                )
-                            }
-                        },
-                        component = rememberImageComponent {
-                            +PalettePlugin(
-                                imageModel = pokemon.getImageUrl(),
-                                useCache = true,
-                                paletteLoadedListener = { palette ->
-                                    palette.dominantSwatch?.rgb?.let { colorValue ->
-                                        //The solution must be Test. (????
-                                        if (Color(colorValue).luminance() < 0.1) {
-                                            palette.vibrantSwatch?.rgb?.let { vibrantColor ->
-                                                // ->Do MutableState value Here <-//
-                                                colorText.value =
-                                                    Color(vibrantColor).generateOnColor()
-                                            }
-                                        } else {
+                CoilImage(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    imageModel = { pokemon.getImageUrl() },
+                    imageOptions = ImageOptions(
+                        alignment = Alignment.Center,
+                        contentDescription = pokemon.name
+                    ),
+                    previewPlaceholder = R.drawable.ivasaur,
+                    loading = {
+                        Box(modifier = Modifier.matchParentSize()) {
+                            CircularProgressIndicator(
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    },
+                    component = rememberImageComponent {
+                        +PalettePlugin(
+                            imageModel = pokemon.getImageUrl(),
+                            useCache = true,
+                            paletteLoadedListener = { palette ->
+                                palette.dominantSwatch?.rgb?.let { dominantColor ->
+                                    //The solution must be Testing. Pending!!
+                                    if (Color(dominantColor).luminance() < 0.1) {
+                                        palette.vibrantSwatch?.rgb?.let { vibrantColor ->
                                             // ->Do MutableState value Here <-//
-                                            colorText.value = Color(colorValue).generateOnColor()
+                                            backgroundColor.value = Color(vibrantColor)
+                                            colorText.value =
+                                                Color(vibrantColor).generateOnColor()
                                         }
+                                    } else {
+                                        // ->Do MutableState value Here <-//
+                                        backgroundColor.value = Color(dominantColor)
+                                        colorText.value = Color(dominantColor).generateOnColor()
                                     }
                                 }
-                            )
-                        }
-                    )
-
-                    Spacer(modifier = Modifier.size(8.dp))
-
-                    flavorTextEntry?.let { flavorTextEntry ->
-                        with(flavorTextEntry) {
-                            PokemonDescriptor(
-                                modifier = modifier,
-                                titleVersion = version.name,
-                                text = flavor_text
-                            )
-                        }
+                            }
+                        )
                     }
-
-                    Spacer(modifier = Modifier.size(20.dp))
-
-                    WeightHeightRow(
-                        modifier = modifier,
-                        weight = weight.div(10).toString(),
-                        height = height.div(10).toString()
-                    )
-                }
+                )
             }
-        }
-    }
-
-/*    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        *//*Log.i("PokemonInfo", "State Loading: ${state.isLoading}")*//*
-        Log.i("PokemonInfo", "State: ${state}")
-        if (state.isLoading) {
-            CircularProgressIndicator()
-        }
-
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            state.pokemonInfo?.let { pokemonInfo ->
-                with(pokemonInfo) {
-                    Text(text = id.toString(), fontSize = 40.sp)
-                    Text(text = name, fontSize = 40.sp)
-                    Text(text = weight.toString(), fontSize = 40.sp)
-                    Text(text = height.toString(), fontSize = 40.sp)
-                }
-            }
-
-            state.pokemonDescription?.let { speciesInfo ->
-                with(speciesInfo) {
-                    val pokemonDescription = flavor_text_entries.find { flavorTextEntry ->
-                        flavorTextEntry.language.name == "en"
-                    }
-
-                    pokemonDescription?.let { flavorTextEntry ->
-                        val description = flavorTextEntry.flavor_text
-                        Text(text = description, fontSize = 16.sp, color = SnolaxColor)
-                    }
-
-                }
-            }
-
-        }
-    }*/
-
-
-
-
-
-
-}
-
-@Preview(showSystemUi = true, device = Devices.NEXUS_5)
-@Composable
-fun test() {
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFF93C9AD))
-    ) {
-
-        val horizontalPadding: Dp = 20.dp
-        val topBarPaddingValues = PaddingValues(horizontal = 10.dp, vertical = 20.dp)
-        val modifier: Modifier = Modifier.padding(horizontal = horizontalPadding)
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-
-            Spacer(modifier = Modifier.size(12.dp))
-            TopBar(modifier = Modifier.padding(paddingValues = topBarPaddingValues))
-
-            Spacer(modifier = Modifier.size(12.dp))
-
-            IndexAndPokemonTypeRow(modifier)
-            NameAndPokemonType2Row(modifier)
-
-            CoilImage(
-                modifier = Modifier
-                    .padding(horizontal = 80.dp, vertical = 8.dp)
-                    .aspectRatio(1F / 1F),
-                imageModel = { R.drawable.ivasaur },
-                previewPlaceholder = R.drawable.ivasaur
-            )
 
             Spacer(modifier = Modifier.size(8.dp))
 
-            PokemonDescriptor(modifier)
+            PokemonDescriptor(
+                modifier = modifier,
+                state = state,
+                flavorTextEntry = flavorTextEntry
+            )
 
             Spacer(modifier = Modifier.size(20.dp))
 
-            WeightHeightRow(modifier)
+            WeightHeightRow(
+                modifier = modifier,
+                state = state
+            )
         }
     }
 }
@@ -268,9 +199,23 @@ fun TopBar(modifier: Modifier = Modifier, color: Color = Color.White) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
 
-        Box(modifier = Modifier.clickable { 
-            
-        }) {
+/*        Box(modifier = Modifier
+            .clip(CircleShape)
+            .clickable {}
+        ) {
+            Icon(
+                painterResource(
+                    id = R.drawable.ic_arrow_back_32
+                ),
+                contentDescription = "back",
+                modifier = Modifier.size(32.dp),
+                tint = color
+            )
+        }*/
+
+        IconButton(
+            onClick = { }
+        ) {
             Icon(
                 painterResource(
                     id = R.drawable.ic_arrow_back_32
@@ -281,21 +226,8 @@ fun TopBar(modifier: Modifier = Modifier, color: Color = Color.White) {
             )
         }
 
-/*        IconButton(
-            onClick = { *//*TODO*//* }
-        ) {
-            Icon(
-                painterResource(
-                    id = R.drawable.ic_arrow_back_32
-                ),
-                contentDescription = "back",
-                modifier = Modifier.size(48.dp),
-                tint = color
-            )
-        }*/
-
         IconButton(
-            onClick = { /*TODO*/ }
+            onClick = { }
         ) {
             Icon(
                 painterResource(
@@ -429,8 +361,8 @@ fun NameAndPokemonType2Row(
 @Composable
 fun PokemonDescriptor(
     modifier: Modifier = Modifier,
-    titleVersion: String = "Diamond",
-    text: String = stringResource(id = R.string.lorem_ipsum),
+    state: PokemonInfoState = PokemonInfoState(),
+    flavorTextEntry: FlavorTextEntry? = null,
     cornerSize: Dp = 10.dp,
     horizontalPaddingText: Dp = 15.dp,
     topPaddingText: Dp = 18.dp,
@@ -445,41 +377,67 @@ fun PokemonDescriptor(
             .fillMaxWidth()
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(cornerSize))
-                .align(Alignment.Center)
-                .background(backgroundColor)
-        ) {
-            Text(
-                modifier = Modifier.padding(
-                    start = horizontalPaddingText,
-                    end = horizontalPaddingText,
-                    top = topPaddingText,
-                    bottom = bottomPaddingText
-                ),
-                text = text,
-                fontFamily = Raleway,
-                color = textColor,
-                maxLines = 8
-            )
+        if (state.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .align(Alignment.Center)
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(backgroundColor)
+            ) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .padding(10.dp)
+                )
+            }
         }
 
-        Box(
-            modifier = Modifier
-                .offset(x = 10.dp, y = -12.dp)
-                .clip(RoundedCornerShape(20.dp))
-                .background(backgroundColorTitle)
-                .align(Alignment.TopStart)
-        ) {
-            Text(
+        flavorTextEntry?.let {
+            Box(
                 modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 4.dp),
-                text = "Pokédex $titleVersion",
-                color = SnolaxColor,
-                fontFamily = Raleway,
-            )
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(cornerSize))
+                    .align(Alignment.Center)
+                    .background(backgroundColor)
+            ) {
+
+                Text(
+                    modifier = Modifier.padding(
+                        start = horizontalPaddingText,
+                        end = horizontalPaddingText,
+                        top = topPaddingText,
+                        bottom = bottomPaddingText
+                    ),
+                    text = it.flavor_text.replace("\\s+".toRegex(), " "),
+                    fontFamily = Raleway,
+                    color = textColor,
+                    maxLines = 8
+                )
+            }
+
+            Box(
+                modifier = Modifier
+                    .offset(x = 10.dp, y = -12.dp)
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(backgroundColorTitle)
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                    text = "Pokédex ${it.version.name.capitalize()}",
+                    color = SnolaxColor,
+                    fontFamily = Raleway,
+                    style = TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false,
+                        )
+                    )
+                )
+            }
         }
     }
 }
@@ -487,13 +445,50 @@ fun PokemonDescriptor(
 @Composable
 fun WeightHeightRow(
     modifier: Modifier = Modifier,
-    weight: String = "0.0",
-    height: String = "0.0",
+    state: PokemonInfoState = PokemonInfoState(),
     colorBackground: Color = Color.White,
     tintIcon: Color = SnolaxColor,
     roundedCornerShape: RoundedCornerShape = RoundedCornerShape(15.dp),
-    horizontalPadding: Dp = 24.dp
+    horizontalPadding: Dp = 24.dp,
+    iconSpace: Dp = 4.dp
 ) {
+
+    val TAG = "WeightHeightRow"
+
+    val weight = remember {
+        Log.i(TAG, "Weight")
+        mutableStateOf("-.-")
+    }
+
+    val height = remember {
+        Log.i(TAG, "Height")
+        mutableStateOf("-.-")
+    }
+
+/*    val idk_height = remember(state.pokemonInfo) {
+        if(state.pokemonInfo != null){
+            Log.i(TAG, "RECOMPOSITION ALERT FROM IDK")
+            return@remember state.pokemonInfo.height.div(10).toString()
+        }else{
+            return@remember "-.-"
+        }
+    }*/
+
+    LaunchedEffect(state.pokemonInfo){
+        state.pokemonInfo?.let {
+            Log.i(TAG, "Height: ")
+            weight.value = (it.weight.toFloat()/10).toString()
+            height.value = (it.height.toFloat()/10).toString()
+        }
+    }
+
+    Log.i(TAG, "RECOMPOSITION ALERT")
+
+/*    state.pokemonInfo?.let {
+        Log.i(TAG, "State Let call")
+        weight.value = it.weight.div(10).toString()
+        height.value = it.height.div(10).toString()
+    }*/
 
     Row(
         modifier = modifier
@@ -515,6 +510,7 @@ fun WeightHeightRow(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(iconSpace)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.weight_24),
@@ -522,18 +518,30 @@ fun WeightHeightRow(
                         tint = tintIcon
                     )
                     Text(
-                        text = weight,
+                        text = "${weight.value} Kg",
                         fontFamily = Raleway,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = tintIcon
+                        color = tintIcon,
+                        style = TextStyle(
+                            lineHeight = 2.5.em,
+                            platformStyle = PlatformTextStyle(
+                                includeFontPadding = false,
+                            )
+                        )
                     )
                 }
                 Text(
                     text = "Weight",
                     fontFamily = Raleway,
                     fontWeight = FontWeight.Normal,
-                    color = tintIcon
+                    color = tintIcon,
+                    style = TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false,
+                        )
+                    )
                 )
             }
         }
@@ -542,7 +550,7 @@ fun WeightHeightRow(
             modifier = Modifier
                 .width(1.dp)
                 .fillMaxHeight()
-                .padding(vertical = 5.dp),
+                .padding(vertical = 10.dp),
             color = colorBackground
         )
 
@@ -558,6 +566,7 @@ fun WeightHeightRow(
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(iconSpace)
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_straighten_24_),
@@ -565,28 +574,61 @@ fun WeightHeightRow(
                         tint = tintIcon
                     )
                     Text(
-                        text = height,
+                        text = "${height.value} m",
                         fontFamily = Raleway,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,
-                        color = tintIcon
+                        color = tintIcon,
+                        style = TextStyle(
+                            lineHeight = 2.5.em,
+                            platformStyle = PlatformTextStyle(
+                                includeFontPadding = false,
+                            )
+                        )
                     )
                 }
                 Text(
                     text = "Height",
                     fontFamily = Raleway,
                     fontWeight = FontWeight.Normal,
-                    color = tintIcon
+                    color = tintIcon,
+                    style = TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false,
+                        )
+                    )
                 )
             }
         }
     }
 }
 
-/*@Preview(showBackground = true, backgroundColor = 0x93C9AD, widthDp = 200)
+@Preview(showBackground = true, backgroundColor = 0x93C9AD,device = Devices.PIXEL_3)
+@Composable
+fun PreviewPokemonInfo() {
+    PokemonInfo(
+        pokemon = Pokemon("Bulbasur")
+    )
+}
+
+@Preview(showBackground = true, backgroundColor = 0x93C9AD, widthDp = 200)
 @Composable
 fun PreviewTopBar(){
     TopBar()
-}*/
+}
+
+@Preview(showBackground = true, backgroundColor = 0x93C9AD, device = Devices.NEXUS_5)
+@Composable
+fun PreviewPokemonDescription() {
+    PokemonDescriptor(
+        state = PokemonInfoState(isLoading = false),
+        flavorTextEntry = FlavorTextEntry(
+            "Bla bla bla bla bla",
+            Language("en"),
+            Version("Diamon")
+        )
+    )
+}
 
 

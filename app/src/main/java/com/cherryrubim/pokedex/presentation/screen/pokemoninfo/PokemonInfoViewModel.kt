@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
 import com.cherryrubim.pokedex.util.ResultZip
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
@@ -45,15 +46,13 @@ class PokemonInfoViewModel @Inject constructor(
                 val pokemonInfoFlow = pokemonRepository.getPokemon(pokemonName)
                 val pokemonDescriptionFlow = pokemonRepository.getPokemonDescription(pokemonName)
 
-                Log.i(TAG, "State Loading PreFlow: ${state.isLoading}")
                 state = state.copy(isLoading = true)
                 pokemonInfoFlow.zip(pokemonDescriptionFlow) { pokemonInfoResult, pokemonDescriptionResult ->
-                    Log.i(TAG, "State Loading in Flow: ${state.isLoading}")
                     return@zip ResultZip(pokemonInfoResult, pokemonDescriptionResult)
                 }
                     .catch { e ->
                         Log.e(TAG, e.message.toString())
-                        state = state.copy(isError = true)
+                        state = state.copy(isError = true, isLoading = false)
                     }
                     .collect { resultZip ->
                         val pokemonInfoResource = resultZip.componentA
@@ -62,11 +61,13 @@ class PokemonInfoViewModel @Inject constructor(
                         if (pokemonInfoResource is Resource.Success &&
                             pokemonDescriptionResource is Resource.Success
                         ) {
+                            Log.i(TAG, pokemonInfoResource.data.toString())
+                            Log.i(TAG, pokemonDescriptionResource.data?.flavor_text_entries?.find { it.version.name == "sword" && it.language.name == "es" }.toString())
                             state = PokemonInfoState(
                                 pokemonInfo = pokemonInfoResource.data,
-                                pokemonDescription = pokemonDescriptionResource.data
+                                pokemonDescription = pokemonDescriptionResource.data,
+                                isLoading = false
                             )
-                            Log.i(TAG, "State Loading Success Set New State: ${state.isLoading}")
                         }
                     }
             }
