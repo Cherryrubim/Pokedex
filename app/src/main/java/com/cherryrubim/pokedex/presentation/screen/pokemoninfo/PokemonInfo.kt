@@ -8,6 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -40,6 +41,7 @@ import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxBackgroundColor
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.cherryrubim.pokedex.util.generateOnColor
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
@@ -56,6 +58,39 @@ fun PokemonInfo(
 ) {
     val TAG = "PokemonInfo"
 
+
+    val systemUiController = rememberSystemUiController()
+    val useDarkIcons = !isSystemInDarkTheme()
+    val colorSchemeBackground = colorScheme.background
+
+    DisposableEffect(systemUiController, useDarkIcons) {
+        // Update all of the system bar colors to be transparent, and use
+        // dark icons if we're in light theme
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
+
+        // setStatusBarColor() and setNavigationBarColor() also exist
+
+        onDispose {
+            systemUiController.setSystemBarsColor(
+                color = colorSchemeBackground,
+                darkIcons = useDarkIcons
+            )
+
+/*            systemUiController.setStatusBarColor(
+                color = colorSchemeBackground,
+                darkIcons = useDarkIcons
+            )
+
+            systemUiController.setNavigationBarColor(
+                color = colorSchemeBackground,
+                darkIcons = useDarkIcons
+            )*/
+        }
+    }
+
     //Only Debug use
 /*    val speciesInfo = SpeciesInfo(flavor_text_entries = listOf(
         FlavorTextEntry(
@@ -68,7 +103,7 @@ fun PokemonInfo(
     val state = viewModel.state
 
     val horizontalPadding: Dp = 20.dp
-    val topBarPaddingValues = PaddingValues(start = 10.dp, end = 10.dp, top = 15.dp, bottom = 8.dp)
+    val topBarPaddingValues = PaddingValues(start = 10.dp, end = 10.dp, top = 30.dp, bottom = 8.dp)
     val modifier: Modifier = Modifier.padding(horizontal = horizontalPadding)
 
     val colorText = remember {
@@ -107,6 +142,8 @@ fun PokemonInfo(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+
+            Spacer(modifier = Modifier.size(15.dp))
 
             TopBar(
                 modifier = Modifier.padding(paddingValues = topBarPaddingValues),
@@ -155,13 +192,14 @@ fun PokemonInfo(
                                 palette.dominantSwatch?.rgb?.let { dominantColor ->
                                     //The solution must be Testing. Pending!!
                                     if (Color(dominantColor).luminance() < 0.1) {
-                                        palette.vibrantSwatch?.rgb?.let { vibrantColor ->
+                                        palette.lightVibrantSwatch?.rgb?.let { vibrantColor ->
                                             // ->Do MutableState value Here <-//
                                             backgroundColor.value = Color(vibrantColor)
                                             colorText.value =
                                                 Color(vibrantColor).generateOnColor()
                                         }
                                     } else {
+                                        Log.i(TAG, "Palette: DominantColor")
                                         // ->Do MutableState value Here <-//
                                         backgroundColor.value = Color(dominantColor)
                                         colorText.value = Color(dominantColor).generateOnColor()
@@ -268,33 +306,46 @@ fun IndexAndPokemonTypeRow(
                 )
             )
         )
+        
+/*        OutlinedButton(onClick = { *//*TODO*//* }) {
+            
+        }*/
 
         Box(
             modifier = Modifier
+                .border(
+                    width = 2.dp,
+                    color = Color(0xFF2BC931),
+                    shape = roundedCornerShape
+                    /*BorderStroke(2.dp, Color(0xFF2BC931)),
+                    roundedCornerShape*/
+                )
                 .clip(roundedCornerShape)
                 .background(Color.White)
-                .border(
-                    BorderStroke(1.dp, SnolaxColor),
-                    roundedCornerShape
-                )
         ) {
             Row(
                 modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
+                    .padding(horizontal = 10.dp, vertical = 5.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
             ) {
-                Icon(
+/*                Icon(
                     modifier = Modifier.size(22.dp),
-                    imageVector = Icons.Default.Favorite,
+                    imageVector = R,
                     contentDescription = "Type 1"
+                )*/
+
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_grass),
+                    contentDescription = "Grass",
+                    tint = Color(0xFF2BC931)
                 )
 
                 Text(
-                    text = type,
-                    fontWeight = FontWeight.Light,
-                    color = SnolaxColor,
-                    fontSize = 20.sp
+                    text = "Grass",
+                    fontWeight = FontWeight.Medium,
+                    color = Color(0xFF2BC931),
+                    fontSize = 20.sp,
                 )
             }
         }
@@ -329,7 +380,7 @@ fun NameAndPokemonType2Row(
             )
         )
 
-        Box(
+/*        Box(
             modifier = Modifier
                 .clip(roundedCornerShape)
                 .background(Color.White)
@@ -354,7 +405,7 @@ fun NameAndPokemonType2Row(
                     fontSize = 20.sp
                 )
             }
-        }
+        }*/
     }
 }
 
