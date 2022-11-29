@@ -1,4 +1,4 @@
-package com.cherryrubim.pokedex.domain.model.idk
+package com.cherryrubim.pokedex.domain.model
 
 data class FlavorTextEntry(
     val flavor_text: String,

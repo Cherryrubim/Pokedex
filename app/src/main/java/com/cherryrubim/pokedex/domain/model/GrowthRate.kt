@@ -1,4 +1,4 @@
-package com.cherryrubim.pokedex.domain.model.idk
+package com.cherryrubim.pokedex.domain.model
 
 data class GrowthRate(
     val name: String,

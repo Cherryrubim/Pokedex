@@ -1,6 +1,5 @@
 package com.cherryrubim.pokedex.domain.model
 
-data class TypeX(
+data class Language(
     val name: String,
-    val url: String
 )

@@ -1,6 +1,5 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemoninfo
 
-import android.os.Parcelable
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -14,13 +13,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import com.cherryrubim.pokedex.domain.model.PokemonInfo
-import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
 import com.cherryrubim.pokedex.util.ResultZip
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.zip
 
 @HiltViewModel

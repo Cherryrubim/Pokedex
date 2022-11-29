@@ -1,6 +1,5 @@
 package com.cherryrubim.pokedex.domain.model
 
-data class StatX(
+data class Version(
     val name: String,
-    val url: String
 )

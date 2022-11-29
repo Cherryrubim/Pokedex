@@ -3,10 +3,7 @@ package com.cherryrubim.pokedex.presentation.screen.pokemoninfo
 import android.util.Log
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.material3.MaterialTheme.colorScheme
 import androidx.compose.runtime.*
@@ -17,10 +14,8 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,19 +23,19 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
-import androidx.core.text.trimmedLength
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cherryrubim.pokedex.R
-import com.cherryrubim.pokedex.domain.model.Pokemon
-import com.cherryrubim.pokedex.domain.model.PokemonInfo
-import com.cherryrubim.pokedex.domain.model.idk.FlavorTextEntry
-import com.cherryrubim.pokedex.domain.model.idk.Language
-import com.cherryrubim.pokedex.domain.model.idk.SpeciesInfo
-import com.cherryrubim.pokedex.domain.model.idk.Version
+import com.cherryrubim.pokedex.domain.model.*
+import com.cherryrubim.pokedex.domain.model.FlavorTextEntry
+import com.cherryrubim.pokedex.domain.model.Language
+import com.cherryrubim.pokedex.domain.model.Version
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.IndexAndPokemonTypeRow
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.TopBarCustom
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxBackgroundColor
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.cherryrubim.pokedex.util.generateOnColor
+import com.cherryrubim.pokedex.util.removeDuplicateSpace
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
 import com.skydoves.landscapist.ImageOptions
@@ -52,12 +47,11 @@ import com.skydoves.landscapist.palette.PalettePlugin
 @Composable
 fun PokemonInfo(
     index: Int = 0,
-    pokemon: Pokemon = Pokemon(),
+    pokemon: Pokemon,
     color: Int = 0,
     viewModel: PokemonInfoViewModel = hiltViewModel()
 ) {
     val TAG = "PokemonInfo"
-
 
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
@@ -145,7 +139,7 @@ fun PokemonInfo(
 
             Spacer(modifier = Modifier.size(15.dp))
 
-            TopBar(
+            TopBarCustom(
                 modifier = Modifier.padding(paddingValues = topBarPaddingValues),
                 color = colorText.value
             )
@@ -153,6 +147,7 @@ fun PokemonInfo(
             IndexAndPokemonTypeRow(
                 modifier = modifier,
                 index = index,
+                state = state,
                 colorIndex = colorText.value
             )
             NameAndPokemonType2Row(
@@ -225,129 +220,6 @@ fun PokemonInfo(
                 modifier = modifier,
                 state = state
             )
-        }
-    }
-}
-
-@Composable
-fun TopBar(modifier: Modifier = Modifier, color: Color = Color.White) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-
-/*        Box(modifier = Modifier
-            .clip(CircleShape)
-            .clickable {}
-        ) {
-            Icon(
-                painterResource(
-                    id = R.drawable.ic_arrow_back_32
-                ),
-                contentDescription = "back",
-                modifier = Modifier.size(32.dp),
-                tint = color
-            )
-        }*/
-
-        IconButton(
-            onClick = { }
-        ) {
-            Icon(
-                painterResource(
-                    id = R.drawable.ic_arrow_back_32
-                ),
-                contentDescription = "back",
-                modifier = Modifier.size(32.dp),
-                tint = color
-            )
-        }
-
-        IconButton(
-            onClick = { }
-        ) {
-            Icon(
-                painterResource(
-                    id = R.drawable.ic_favorite_fill_32
-                ),
-                contentDescription = "favorite",
-                modifier = Modifier.size(32.dp),
-                tint = color
-            )
-        }
-    }
-}
-
-@Composable
-fun IndexAndPokemonTypeRow(
-    modifier: Modifier = Modifier,
-    index: Int = 0,
-    type: String = "????",
-    colorIndex: Color = Color.White,
-    roundedCornerShape: RoundedCornerShape = RoundedCornerShape(20.dp)
-) {
-
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = "#${index.toString().padStart(3, '0')}",
-            fontFamily = Raleway,
-            fontWeight = FontWeight.Light,
-            fontSize = 32.sp,
-            color = colorIndex,
-            style = TextStyle(
-                lineHeight = 2.5.em,
-                platformStyle = PlatformTextStyle(
-                    includeFontPadding = false,
-                )
-            )
-        )
-        
-/*        OutlinedButton(onClick = { *//*TODO*//* }) {
-            
-        }*/
-
-        Box(
-            modifier = Modifier
-                .border(
-                    width = 2.dp,
-                    color = Color(0xFF2BC931),
-                    shape = roundedCornerShape
-                    /*BorderStroke(2.dp, Color(0xFF2BC931)),
-                    roundedCornerShape*/
-                )
-                .clip(roundedCornerShape)
-                .background(Color.White)
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp, vertical = 5.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-/*                Icon(
-                    modifier = Modifier.size(22.dp),
-                    imageVector = R,
-                    contentDescription = "Type 1"
-                )*/
-
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_grass),
-                    contentDescription = "Grass",
-                    tint = Color(0xFF2BC931)
-                )
-
-                Text(
-                    text = "Grass",
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF2BC931),
-                    fontSize = 20.sp,
-                )
-            }
         }
     }
 }
@@ -461,7 +333,7 @@ fun PokemonDescriptor(
                         top = topPaddingText,
                         bottom = bottomPaddingText
                     ),
-                    text = it.flavor_text.replace("\\s+".toRegex(), " "),
+                    text = it.flavor_text.removeDuplicateSpace(),
                     fontFamily = Raleway,
                     color = textColor,
                     maxLines = 8
@@ -500,7 +372,7 @@ fun WeightHeightRow(
     colorBackground: Color = Color.White,
     tintIcon: Color = SnolaxColor,
     roundedCornerShape: RoundedCornerShape = RoundedCornerShape(15.dp),
-    horizontalPadding: Dp = 24.dp,
+    horizontalPadding: Dp = 20.dp,
     iconSpace: Dp = 4.dp
 ) {
 
@@ -516,15 +388,6 @@ fun WeightHeightRow(
         mutableStateOf("-.-")
     }
 
-/*    val idk_height = remember(state.pokemonInfo) {
-        if(state.pokemonInfo != null){
-            Log.i(TAG, "RECOMPOSITION ALERT FROM IDK")
-            return@remember state.pokemonInfo.height.div(10).toString()
-        }else{
-            return@remember "-.-"
-        }
-    }*/
-
     LaunchedEffect(state.pokemonInfo){
         state.pokemonInfo?.let {
             Log.i(TAG, "Height: ")
@@ -533,19 +396,11 @@ fun WeightHeightRow(
         }
     }
 
-    Log.i(TAG, "RECOMPOSITION ALERT")
-
-/*    state.pokemonInfo?.let {
-        Log.i(TAG, "State Let call")
-        weight.value = it.weight.div(10).toString()
-        height.value = it.height.div(10).toString()
-    }*/
-
     Row(
         modifier = modifier
             .height(IntrinsicSize.Max)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceAround,
+        horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
@@ -661,12 +516,6 @@ fun PreviewPokemonInfo() {
     PokemonInfo(
         pokemon = Pokemon("Bulbasur")
     )
-}
-
-@Preview(showBackground = true, backgroundColor = 0x93C9AD, widthDp = 200)
-@Composable
-fun PreviewTopBar(){
-    TopBar()
 }
 
 @Preview(showBackground = true, backgroundColor = 0x93C9AD, device = Devices.NEXUS_5)
