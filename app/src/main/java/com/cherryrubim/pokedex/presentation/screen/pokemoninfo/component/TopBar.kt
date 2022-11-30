@@ -15,7 +15,11 @@ import androidx.compose.ui.unit.dp
 import com.cherryrubim.pokedex.R
 
 @Composable
-fun TopBarCustom(modifier: Modifier = Modifier, color: Color = Color.White) {
+fun TopBarCustom(
+    modifier: Modifier = Modifier,
+    color: Color = Color.White,
+    onClick: () -> Unit = {}
+) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
@@ -23,7 +27,7 @@ fun TopBarCustom(modifier: Modifier = Modifier, color: Color = Color.White) {
     ) {
 
         IconButton(
-            onClick = { }
+            onClick = { onClick() }
         ) {
             Icon(
                 painterResource(

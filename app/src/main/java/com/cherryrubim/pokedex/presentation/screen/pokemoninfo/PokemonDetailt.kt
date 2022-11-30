@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,6 +39,7 @@ import com.cherryrubim.pokedex.util.generateOnColor
 import com.cherryrubim.pokedex.util.removeDuplicateSpace
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
@@ -45,10 +47,11 @@ import com.skydoves.landscapist.palette.PalettePlugin
 
 @Destination
 @Composable
-fun PokemonInfo(
+fun PokemonDetailt(
     index: Int = 0,
     pokemon: Pokemon,
     color: Int = 0,
+    navigator: DestinationsNavigator,
     viewModel: PokemonInfoViewModel = hiltViewModel()
 ) {
     val TAG = "PokemonInfo"
@@ -56,34 +59,6 @@ fun PokemonInfo(
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = !isSystemInDarkTheme()
     val colorSchemeBackground = colorScheme.background
-
-    DisposableEffect(systemUiController, useDarkIcons) {
-        // Update all of the system bar colors to be transparent, and use
-        // dark icons if we're in light theme
-        systemUiController.setSystemBarsColor(
-            color = Color.Transparent,
-            darkIcons = useDarkIcons
-        )
-
-        // setStatusBarColor() and setNavigationBarColor() also exist
-
-        onDispose {
-            systemUiController.setSystemBarsColor(
-                color = colorSchemeBackground,
-                darkIcons = useDarkIcons
-            )
-
-/*            systemUiController.setStatusBarColor(
-                color = colorSchemeBackground,
-                darkIcons = useDarkIcons
-            )
-
-            systemUiController.setNavigationBarColor(
-                color = colorSchemeBackground,
-                darkIcons = useDarkIcons
-            )*/
-        }
-    }
 
     //Only Debug use
 /*    val speciesInfo = SpeciesInfo(flavor_text_entries = listOf(
@@ -125,6 +100,24 @@ fun PokemonInfo(
         }
     }
 
+    DisposableEffect(systemUiController, useDarkIcons) {
+        // Update all of the system bar colors to be transparent, and use
+        // dark icons if we're in light theme
+        systemUiController.setSystemBarsColor(
+            color = Color.Transparent,
+            darkIcons = useDarkIcons
+        )
+
+        // setStatusBarColor() and setNavigationBarColor() also exist
+
+        onDispose {
+            systemUiController.setSystemBarsColor(
+                color = colorSchemeBackground,
+                darkIcons = useDarkIcons
+            )
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -141,7 +134,8 @@ fun PokemonInfo(
 
             TopBarCustom(
                 modifier = Modifier.padding(paddingValues = topBarPaddingValues),
-                color = colorText.value
+                color = colorText.value,
+                onClick = { navigator.popBackStack() }
             )
 
             IndexAndPokemonTypeRow(
@@ -150,10 +144,10 @@ fun PokemonInfo(
                 state = state,
                 colorIndex = colorText.value
             )
-            NameAndPokemonType2Row(
+            PokemonName(
                 modifier = modifier,
-                name = pokemon.name.capitalize(),
-                colorName = colorText.value
+                pokemon = pokemon,
+                colorText = colorText.value
             )
 
             Box(
@@ -225,60 +219,25 @@ fun PokemonInfo(
 }
 
 @Composable
-fun NameAndPokemonType2Row(
+fun PokemonName(
     modifier: Modifier = Modifier,
-    name: String = "Ivysaur",
-    type2: String = "????",
-    colorName: Color = Color.White,
-    roundedCornerShape: RoundedCornerShape = RoundedCornerShape(20.dp)
+    pokemon: Pokemon = Pokemon(),
+    colorText: Color = Color.White,
 ) {
-
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = name,
-            fontFamily = Raleway,
-            fontWeight = FontWeight.Bold,
-            fontSize = 32.sp,
-            color = colorName,
-            style = TextStyle(
-                lineHeight = 2.5.em,
-                platformStyle = PlatformTextStyle(
-                    includeFontPadding = false,
-                )
+    Text(
+        modifier = modifier,
+        text = pokemon.name.capitalize(),
+        fontFamily = Raleway,
+        fontWeight = FontWeight.Bold,
+        fontSize = 32.sp,
+        color = colorText,
+        style = TextStyle(
+            lineHeight = 2.5.em,
+            platformStyle = PlatformTextStyle(
+                includeFontPadding = false,
             )
         )
-
-/*        Box(
-            modifier = Modifier
-                .clip(roundedCornerShape)
-                .background(Color.White)
-                .border(BorderStroke(1.dp, SnolaxColor), roundedCornerShape)
-        ) {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Icon(
-                    modifier = Modifier.size(22.dp),
-                    imageVector = Icons.Default.Favorite,
-                    contentDescription = "Type 1"
-                )
-
-                Text(
-                    text = type2,
-                    fontWeight = FontWeight.Light,
-                    color = SnolaxColor,
-                    fontSize = 20.sp
-                )
-            }
-        }*/
-    }
+    )
 }
 
 @Composable
@@ -513,9 +472,7 @@ fun WeightHeightRow(
 @Preview(showBackground = true, backgroundColor = 0x93C9AD,device = Devices.PIXEL_3)
 @Composable
 fun PreviewPokemonInfo() {
-    PokemonInfo(
-        pokemon = Pokemon("Bulbasur")
-    )
+
 }
 
 @Preview(showBackground = true, backgroundColor = 0x93C9AD, device = Devices.NEXUS_5)

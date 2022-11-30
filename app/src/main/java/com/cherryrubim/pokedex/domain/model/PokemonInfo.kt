@@ -1,6 +1,7 @@
 package com.cherryrubim.pokedex.domain.model
 
 import android.os.Parcelable
+import com.cherryrubim.pokedex.domain.model.PokemonType.*
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

@@ -10,7 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-
+val GrayLight = Color(0xFFCECECE)
 val SnolaxColor = Color(0xFF5D94A7)
 val SnolaxBackgroundColor = Color(0xFFD9F5FF)
 

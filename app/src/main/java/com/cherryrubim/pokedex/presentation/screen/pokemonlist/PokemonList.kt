@@ -1,6 +1,5 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemonlist
 
-import android.nfc.Tag
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -25,9 +24,7 @@ import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
-import com.cherryrubim.pokedex.domain.model.Pokemon
-import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonInfoDestination
-import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonInfo
+import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonDetailtDestination
 import com.cherryrubim.pokedex.util.isLastItemVisible
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -82,7 +79,7 @@ fun PokemonList(
                     index = index+1,
                     pokemon = item,
                     onClick = { pokemon, color ->
-                        navigator.navigate(PokemonInfoDestination(index = index+1, pokemon = pokemon, color = color.toArgb()))
+                        navigator.navigate(PokemonDetailtDestination(index = index+1, pokemon = pokemon, color = color.toArgb()))
                     }
                     //Navigation Compose
                     //onClick = onNavigationToPokemonInfo

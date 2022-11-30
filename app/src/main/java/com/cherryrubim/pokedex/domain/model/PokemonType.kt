@@ -29,7 +29,7 @@ enum class PokemonType(
     STEEL(type = "Steel", id = R.drawable.steel, color = SteelColor),
     WATER(type = "Water", id = R.drawable.water, color = WaterColor);
 
-    //Mapping Type From API to PokemonType
+    /*//Mapping Type From API to PokemonType
     companion object {
         fun getType(type: String?): PokemonType?{
             when(type){
@@ -54,5 +54,5 @@ enum class PokemonType(
                 else -> {return null}
             }
         }
-    }
+    }*/
 }
