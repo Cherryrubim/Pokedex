@@ -1,10 +1,8 @@
 package com.cherryrubim.pokedex.data.mapper
 
 import com.cherryrubim.pokedex.data.local.entity.PokemonEntity
-import com.cherryrubim.pokedex.domain.model.Pokemon
-import com.cherryrubim.pokedex.domain.model.PokemonType
+import com.cherryrubim.pokedex.domain.model.*
 import com.cherryrubim.pokedex.domain.model.PokemonType.*
-import com.cherryrubim.pokedex.domain.model.TypeXX
 
 fun PokemonEntity.toPokemon(): Pokemon {
     return Pokemon(
@@ -41,5 +39,23 @@ fun TypeXX.toPokemonType(): PokemonType? {
         "steel" -> {return STEEL}
         "water" -> {return WATER}
         else -> {return null}
+    }
+}
+
+fun StatXX.toStat(): Stat {
+
+    return when(this.stat.name){
+
+        "special-attack" -> {
+            return Stat("Sp. Atk", this.base_stat)
+        }
+
+        "special-defense" -> {
+            return Stat("Sp. Def", this.base_stat)
+        }
+
+        else -> {
+            return Stat(stat.name.capitalize(), this.base_stat)
+        }
     }
 }

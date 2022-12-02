@@ -1,6 +1,7 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemoninfo
 
 import android.util.Log
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -31,6 +32,7 @@ import com.cherryrubim.pokedex.domain.model.FlavorTextEntry
 import com.cherryrubim.pokedex.domain.model.Language
 import com.cherryrubim.pokedex.domain.model.Version
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.IndexAndPokemonTypeRow
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.StatsBox
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.TopBarCustom
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxBackgroundColor
@@ -214,6 +216,35 @@ fun PokemonDetailt(
                 modifier = modifier,
                 state = state
             )
+
+            Spacer(modifier = Modifier.size(20.dp))
+
+            Text(
+                modifier = modifier,
+                text = "Stat",
+                fontFamily = Raleway,
+                fontWeight = FontWeight.Medium,
+                color = colorText.value,
+                fontSize = 20.sp,
+                style = TextStyle(
+                    lineHeight = 2.5.em,
+                    platformStyle = PlatformTextStyle(
+                        includeFontPadding = false,
+                    )
+                )
+            )
+
+            Spacer(modifier = Modifier.size(14.dp))
+
+            StatsBox(
+                modifier = modifier,
+                state = state,
+                //textColor = colorText.value,
+                dominantColor = backgroundColor.value,
+            )
+
+            Spacer(modifier = Modifier.size(20.dp))
+            
         }
     }
 }
