@@ -25,7 +25,7 @@ class PokemonInfoViewModel @Inject constructor(
 
     val TAG = "PokemonInfoViewModel"
 
-    var state by mutableStateOf(PokemonInfoState())
+    var state by mutableStateOf(PokemonDetailState())
         private set
 
     init {
@@ -57,7 +57,7 @@ class PokemonInfoViewModel @Inject constructor(
                         ) {
                             Log.i(TAG, pokemonInfoResource.data.toString())
                             Log.i(TAG, pokemonDescriptionResource.data?.flavor_text_entries?.find { it.version.name == "sword" && it.language.name == "es" }.toString())
-                            state = PokemonInfoState(
+                            state = PokemonDetailState(
                                 pokemonInfo = pokemonInfoResource.data,
                                 pokemonDescription = pokemonDescriptionResource.data,
                                 isLoading = false

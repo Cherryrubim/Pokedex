@@ -1,5 +1,7 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component
 
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -18,7 +20,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -26,14 +27,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.cherryrubim.pokedex.data.mapper.toStat
+import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.domain.model.Stat
-import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonInfoState
+import com.cherryrubim.pokedex.domain.model.StatXX
+import com.cherryrubim.pokedex.domain.model.StatXXX
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 import com.cherryrubim.pokedex.ui.theme.*
 
 @Composable
 fun StatsBox(
     modifier: Modifier = Modifier,
-    state: PokemonInfoState,
+    state: PokemonDetailState,
     textColor: Color = Color.Black,
     background: Color = Color.White,
     dominantColor: Color = SnolaxColor,
@@ -113,8 +117,6 @@ fun BarStat(
     statBarColor: Color = SnolaxColor,
 ) {
 
-  //  Color.hsl(45F, 56F, 56F)
-
     val statValue = remember {
         Log.i("BarStat", "Stat: ${stat.baseStat}")
         if (stat.baseStat > maxStat) {
@@ -147,7 +149,7 @@ fun BarStat(
     ) {
 
         Text(
-            modifier = Modifier.widthIn(68.dp),
+            modifier = Modifier.widthIn(62.dp),
             text = stat.name,
             fontFamily = Raleway,
             fontWeight = FontWeight.Medium,
@@ -196,4 +198,20 @@ fun BarStat(
 @Composable
 fun PreviewStatBar(){
     BarStat()
+}
+
+@Preview
+@Composable
+fun PreviewStatsBox(){
+    val stats = listOf<StatXX>(
+        StatXX(45, 0, StatXXX("hp")),
+        StatXX(49, 0, StatXXX("attack")),
+        StatXX(49, 0, StatXXX("defense")),
+        StatXX(65, 0, StatXXX("special-attack")),
+        StatXX(65, 0, StatXXX("special-defense")),
+        StatXX(45, 0, StatXXX("speed"))
+    )
+    val pokemonInfo = PokemonInfo(stats = stats)
+    val state = PokemonDetailState(pokemonInfo = pokemonInfo, isLoading = false)
+    StatsBox(state = state)
 }

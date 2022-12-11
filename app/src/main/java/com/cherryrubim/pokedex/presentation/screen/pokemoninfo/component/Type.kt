@@ -1,7 +1,6 @@
 package com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -11,7 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.PlatformTextStyle
@@ -25,8 +23,7 @@ import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.domain.model.PokemonType
 import com.cherryrubim.pokedex.domain.model.TypeXX
 import com.cherryrubim.pokedex.domain.model.TypeXXX
-import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonInfoState
-import com.cherryrubim.pokedex.ui.theme.SnolaxColor
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 
 @Composable
 fun Type(
@@ -37,11 +34,11 @@ fun Type(
 
     Surface(
         color = background,
-        border = BorderStroke(2.dp, pokemonType.color),
+        border = BorderStroke(1.dp, pokemonType.color),
         shape = roundedCornerShape,
         modifier = Modifier // <- Solution for Bug: Background is visible outside border.
             .border(
-                width = 2.dp,
+                width = 1.dp,
                 color = pokemonType.color,
                 shape = roundedCornerShape
             )
@@ -83,6 +80,6 @@ fun PreviewType() {
     val pokemonInfo = PokemonInfo(
         types = listOf(TypeXX(0, type = TypeXXX("grass", "")))
     )
-    val pokemonInfoState = PokemonInfoState(pokemonInfo = pokemonInfo)
-    IndexAndPokemonTypeRow(state = pokemonInfoState)
+    val pokemonDetailState = PokemonDetailState(pokemonInfo = pokemonInfo)
+    IndexAndPokemonTypeRow(state = pokemonDetailState)
 }

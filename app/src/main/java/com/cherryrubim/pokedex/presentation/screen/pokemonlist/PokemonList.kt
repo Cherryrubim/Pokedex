@@ -24,7 +24,8 @@ import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.toArgb
-import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonDetailtDestination
+import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonDetailDestination
+
 import com.cherryrubim.pokedex.util.isLastItemVisible
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -54,7 +55,11 @@ fun PokemonList(
     }
 
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .statusBarsPadding()
+            .navigationBarsPadding()
+        ,
         contentAlignment = Alignment.Center
     ){
 
@@ -79,7 +84,7 @@ fun PokemonList(
                     index = index+1,
                     pokemon = item,
                     onClick = { pokemon, color ->
-                        navigator.navigate(PokemonDetailtDestination(index = index+1, pokemon = pokemon, color = color.toArgb()))
+                       navigator.navigate(PokemonDetailDestination(index = index+1, pokemon = pokemon, color = color.toArgb()))
                     }
                     //Navigation Compose
                     //onClick = onNavigationToPokemonInfo

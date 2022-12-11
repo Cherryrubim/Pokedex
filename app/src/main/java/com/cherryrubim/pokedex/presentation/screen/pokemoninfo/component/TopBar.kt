@@ -27,6 +27,7 @@ fun TopBarCustom(
     ) {
 
         IconButton(
+            modifier = Modifier.size(48.dp),
             onClick = { onClick() }
         ) {
             Icon(
@@ -40,6 +41,7 @@ fun TopBarCustom(
         }
 
         IconButton(
+            modifier = Modifier.size(48.dp),
             onClick = { }
         ) {
             Icon(
@@ -54,7 +56,7 @@ fun TopBarCustom(
     }
 }
 
-//@Preview(showBackground = true, backgroundColor = 0x93C9AD, widthDp = 200)
+@Preview(showBackground = true, backgroundColor = 0x93C9AD, widthDp = 200, showSystemUi = true)
 @Composable
 fun PreviewTopBarCustom(){
     TopBarCustom()

@@ -29,7 +29,8 @@ val Typography = Typography(
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     ),
-    titleLarge = TextStyle(fontFamily = FontFamily.Default)
+    titleLarge = TextStyle(fontFamily = Raleway),
+    labelSmall = TextStyle(fontFamily = Raleway)
 
     /* Other default text styles to override
     titleLarge = TextStyle(

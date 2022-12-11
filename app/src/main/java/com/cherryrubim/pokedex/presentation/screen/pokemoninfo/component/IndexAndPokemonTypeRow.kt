@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.cherryrubim.pokedex.data.mapper.toPokemonType
-import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonInfoState
+import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.util.secondOrNull
 
@@ -25,7 +25,7 @@ import com.cherryrubim.pokedex.util.secondOrNull
 fun IndexAndPokemonTypeRow(
     modifier: Modifier = Modifier,
     index: Int = 0,
-    state: PokemonInfoState = PokemonInfoState(),
+    state: PokemonDetailState = PokemonDetailState(),
     colorIndex: Color = Color.White,
     roundedCornerShape: RoundedCornerShape = RoundedCornerShape(20.dp)
 ) {
