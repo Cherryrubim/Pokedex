@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.domain.model.PokemonType
-import com.cherryrubim.pokedex.domain.model.TypeXX
-import com.cherryrubim.pokedex.domain.model.TypeXXX
+import com.cherryrubim.pokedex.domain.model.PokemonInfo.TypeXX
+import com.cherryrubim.pokedex.domain.model.PokemonInfo.TypeXXX
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 
 @Composable

@@ -1,24 +1,9 @@
 package com.cherryrubim.pokedex.data.mapper
 
-import com.cherryrubim.pokedex.data.local.entity.PokemonEntity
 import com.cherryrubim.pokedex.domain.model.*
 import com.cherryrubim.pokedex.domain.model.PokemonType.*
 
-fun PokemonEntity.toPokemon(): Pokemon {
-    return Pokemon(
-        name = name,
-        url = url
-    )
-}
-
-fun Pokemon.toPokemonEntity(): PokemonEntity{
-    return PokemonEntity(
-        name = name,
-        url = url
-    )
-}
-
-fun TypeXX.toPokemonType(): PokemonType? {
+fun PokemonInfo.TypeXX.toPokemonType(): PokemonType? {
     when(this.type.name){
         "bug" -> {return BUG }
         "dark" -> {return DARK}
@@ -42,7 +27,7 @@ fun TypeXX.toPokemonType(): PokemonType? {
     }
 }
 
-fun StatXX.toStat(): Stat {
+fun PokemonInfo.StatXX.toStat(): Stat {
 
     return when(this.stat.name){
 

@@ -1,5 +1,8 @@
 package com.cherryrubim.pokedex.domain.model
 
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
 data class SpeciesInfo(
     val base_happiness: Int = 0,
     val capture_rate: Int = 0,

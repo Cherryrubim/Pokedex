@@ -14,6 +14,7 @@ import javax.inject.Inject
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.cherryrubim.pokedex.util.ResultZip
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.zip
 
@@ -36,6 +37,8 @@ class PokemonInfoViewModel @Inject constructor(
         savedStateHandle.get<Pokemon>("pokemon")?.name?.let { pokemonName ->
             Log.i(TAG, "SavedStateHandle: $pokemonName")
             viewModelScope.launch {
+
+
 
                 val pokemonInfoFlow = pokemonRepository.getPokemon(pokemonName)
                 val pokemonDescriptionFlow = pokemonRepository.getPokemonDescription(pokemonName)

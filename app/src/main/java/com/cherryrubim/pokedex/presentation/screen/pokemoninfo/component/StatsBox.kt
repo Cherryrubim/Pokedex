@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.cherryrubim.pokedex.data.mapper.toStat
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
+import com.cherryrubim.pokedex.domain.model.PokemonInfo.StatXX
+import com.cherryrubim.pokedex.domain.model.PokemonInfo.StatXXX
 import com.cherryrubim.pokedex.domain.model.Stat
-import com.cherryrubim.pokedex.domain.model.StatXX
-import com.cherryrubim.pokedex.domain.model.StatXXX
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 import com.cherryrubim.pokedex.ui.theme.*
 

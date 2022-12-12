@@ -2,11 +2,13 @@ package com.cherryrubim.pokedex.domain.model
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import kotlinx.parcelize.Parcelize
 
-/*@JsonClass(generateAdapter = true)*/
+@JsonClass(generateAdapter = true)
 @Parcelize
 data class Pokemon(
+    val page: Int = 0,
     @field:Json(name = "name") val name: String = "",
     @field:Json(name = "url") val url: String = ""
 ): Parcelable{

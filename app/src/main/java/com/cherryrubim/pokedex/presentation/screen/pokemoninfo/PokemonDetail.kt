@@ -205,7 +205,7 @@ fun PokemonDetail(
 
             Text(
                 modifier = modifier,
-                text = "Stat",
+                text = "Stats",
                 fontFamily = Raleway,
                 fontWeight = FontWeight.Medium,
                 color = colorText.value,
