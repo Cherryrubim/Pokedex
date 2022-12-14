@@ -1,19 +1,16 @@
 package com.cherryrubim.pokedex.data
 
-import android.app.Application
 import android.util.Log
 import com.cherryrubim.pokedex.data.local.AppDatabase
+import com.cherryrubim.pokedex.data.local.mapper.toDomain
+import com.cherryrubim.pokedex.data.local.mapper.toEntity
 import com.cherryrubim.pokedex.data.remote.PokemonAPI
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
-import com.cherryrubim.pokedex.data.remote.model.PokemonResponseBody
+import com.cherryrubim.pokedex.domain.model.Pokemon
 import com.cherryrubim.pokedex.domain.model.SpeciesInfo
 import com.cherryrubim.pokedex.domain.repository.PokemonRepository
 import com.cherryrubim.pokedex.util.Resource
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -27,17 +24,24 @@ class PokemonRepositoryImpl @Inject constructor(
 {
     val TAG = "PokemonRepositoryImpl"
 
-    override fun getPokemonList(page: Int): Flow<Resource<PokemonResponseBody>> = flow {
-
+    override fun getPokemonList(page: Int): Flow<Resource<List<Pokemon>>> = flow {
         emit(Resource.Loading())
+
         try {
+            val localData = database.pokemonDao().getPokemonList(page)
 
-            val remoteData = api.getPokemonList(offtset = page)
-            val localData = database.pokemonDao().getPokemonList(page).map {
+            if (localData.isEmpty()) {
+                val remoteData = api.getPokemonList(offtset = page).pokemonList.toEntity()
+                Log.i(TAG, "Remote Data: ${remoteData}")
 
+                database.pokemonDao().InsertPokemonList(remoteData)
+                Log.i(TAG, "LocalData Save: ${database.pokemonDao().getPokemonList(page).toDomain()}")
+
+                emit(Resource.Success(database.pokemonDao().getPokemonList(page).toDomain()))
+            }else{
+                emit(Resource.Success(localData.toDomain()))
             }
 
-            //emit(Resource.Success(api.getPokemonList(offtset = offset)))
         } catch (e: IOException) {
             Log.e(TAG, "GetPokemonList Error IO: ${e}")
             emit(Resource.Error(e))
@@ -45,7 +49,6 @@ class PokemonRepositoryImpl @Inject constructor(
             Log.e(TAG, "GetPokemonList Error Http: ${e}")
             emit(Resource.Error(e))
         }
-
     }
 
     override fun getPokemon(name: String): Flow<Resource<PokemonInfo>> = flow {
@@ -53,9 +56,21 @@ class PokemonRepositoryImpl @Inject constructor(
 
         emit(Resource.Loading())
         try {
-            Log.w(TAG, "$TAG_FUNTION Start Delay...")
-            delay(4000)
-            Log.w(TAG, "$TAG_FUNTION Finish Delay...")
+
+            val localData = database.pokemonInfoDao().getPokemonInfo(id = name)
+            if (localData == null) {
+                val remoteData = api.getPokemon(name)
+                Log.i(TAG, "Remote Data: ${remoteData}")
+
+                database.pokemonInfoDao().InsertPokemonInfo(remoteData.toEntity())
+                Log.i(TAG, "LocalData Save: ${database.pokemonInfoDao().getPokemonInfo(name)}")
+
+                emit(Resource.Success(database.pokemonInfoDao().getPokemonInfo(name)?.toDomain()))
+            }else{
+                emit(Resource.Success(localData.toDomain()))
+            }
+
+
             emit(Resource.Success(api.getPokemon(name)))
         } catch (e: IOException) {
             Log.e(TAG, "$TAG_FUNTION Error IO: ${e}")
@@ -71,8 +86,6 @@ class PokemonRepositoryImpl @Inject constructor(
 
         emit(Resource.Loading())
         try {
-            Log.w(TAG, "$TAG_FUNTION Start Delay...")
-            delay(2000)
             Log.w(TAG, "$TAG_FUNTION Finish Delay...")
             emit(Resource.Success(api.getPokemonDescription(name)))
         } catch (e: IOException) {

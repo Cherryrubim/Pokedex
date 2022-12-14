@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 @JsonClass(generateAdapter = true)
 @Parcelize
 data class Pokemon(
-    val page: Int = 0,
     @field:Json(name = "name") val name: String = "",
     @field:Json(name = "url") val url: String = ""
 ): Parcelable{

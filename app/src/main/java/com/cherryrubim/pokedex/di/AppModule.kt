@@ -38,9 +38,9 @@ class AppModule {
     ): AppDatabase {
         return Room
             .databaseBuilder(application, AppDatabase::class.java, "Pokemon.db")
+            .fallbackToDestructiveMigration()
             .addTypeConverter(typeConverter)
             .addTypeConverter(statsConverter)
-            .fallbackToDestructiveMigration()
             .build()
     }
 

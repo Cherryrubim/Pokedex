@@ -101,9 +101,6 @@ fun PokemonItem(
                         imageModel = pokemon.getImageUrl(),
                         useCache = true,
                         paletteLoadedListener = { palette ->
-                            Log.i(TAG, "INDEX[$index]: Palette Dominant: ${palette.dominantSwatch?.rgb}")
-                            Log.i(TAG, "INDEX[$index]: Palette: Vibrant ${palette.vibrantSwatch?.rgb}")
-                            Log.i(TAG, "INDEX[$index]: Palette: LightVibrant ${palette.lightVibrantSwatch?.rgb}")
                             palette.dominantSwatch?.rgb?.let { colorValue ->
 
                                 //The solution must be Test. (????

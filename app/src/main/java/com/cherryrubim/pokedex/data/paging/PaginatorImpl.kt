@@ -10,7 +10,7 @@ class PaginatorImpl<Key, Item>(
     private inline val onloading: (Boolean) -> Unit,
     private inline val onRequest: suspend (nextKey: Key) -> Flow<Resource<Item>>,
     private inline val onError: (Throwable?) -> Unit,
-    private inline val onSuccess: (Item, newKey: Key) -> Unit,
+    private inline val onSuccess: (Item, newKey: Key?) -> Unit,
     private inline val getNextKey: (Item) -> Key?,
 ): Paginator<Key, Item> {
 
@@ -18,11 +18,11 @@ class PaginatorImpl<Key, Item>(
     private var isMakingRequest = false
     override suspend fun loadNextItems() {
 
-        /* Prevent another request if there is one in progress
-         * Prevent request if currentKey is null. */
-        if (isMakingRequest && currentKey == null) return
+        /* Prevent another request if there is one in progress or if currentKey is null. */
+        if (isMakingRequest || currentKey == null) return
 
         isMakingRequest = true
+        Log.i("PaginatorImpl", "Key: $currentKey")
         onRequest(currentKey!!).collect { result ->
             when (result) {
                 is Resource.Success -> {
@@ -30,7 +30,7 @@ class PaginatorImpl<Key, Item>(
                     //delay(5000)
                     result.data?.let {
                         currentKey = getNextKey(it)
-                        onSuccess(it, currentKey!!)
+                        onSuccess(it, currentKey) // <- CurrentKey is NextKey.
                         Log.i("Paginator", "onRequest Success!! Next Key is: $currentKey")
                     }
                     onloading(false)

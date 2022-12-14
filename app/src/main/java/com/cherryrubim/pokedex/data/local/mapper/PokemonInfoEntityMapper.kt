@@ -3,7 +3,7 @@ package com.cherryrubim.pokedex.data.local.mapper
 import com.cherryrubim.pokedex.data.local.entity.PokemonInfoEntity
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 
-fun PokemonInfoEntity.toPokemonInfo(): PokemonInfo {
+fun PokemonInfoEntity.toDomain(): PokemonInfo {
     return PokemonInfo(
         id = this.id,
         name = this.name,
@@ -14,7 +14,7 @@ fun PokemonInfoEntity.toPokemonInfo(): PokemonInfo {
     )
 }
 
-fun PokemonInfo.toPokemonInfoEntity(): PokemonInfoEntity{
+fun PokemonInfo.toEntity(): PokemonInfoEntity{
     return PokemonInfoEntity(
         id = this.id,
         name = this.name,

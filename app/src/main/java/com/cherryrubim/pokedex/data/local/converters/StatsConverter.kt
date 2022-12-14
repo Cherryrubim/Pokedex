@@ -5,9 +5,10 @@ import androidx.room.TypeConverter
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
+import javax.inject.Inject
 
 @ProvidedTypeConverter
-class StatsConverter(private val moshi: Moshi) {
+class StatsConverter @Inject constructor (private val moshi: Moshi) {
 
     val listType = Types.newParameterizedType(List::class.java, PokemonInfo.StatXX::class.java)
     val adapter = moshi.adapter<List<PokemonInfo.StatXX>>(listType)

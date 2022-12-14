@@ -41,8 +41,11 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                 state = state.copy(isLoadingNextPage = it)  // <- Loading for Resquest Page.
             }
         },
-        onSuccess = { item, newKey ->
-            state = state.copy(pokemonList = state.pokemonList + item.pokemonList)
+        onSuccess = { item, _ ->
+            state = state.copy(
+                pokemonList = state.pokemonList + item,
+                lastItemID = item.lastOrNull()?.name
+            )
             Log.i("MainViewModel", state.pokemonList.toString())
         },
         onError = {
@@ -52,8 +55,16 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                 state = state.copy(isErrorPageNextRequest = true) // <- An error ocurred when resquest New Pages
             }
         },
-        getNextKey = { responseBody ->
-            /*Check if count is null and if reached to end elements*/
+        getNextKey = { pokemonList ->
+            if(pokemonList.size < LIMIT_POKEMONS){
+                Log.i("MainViewModel", "PokemonList Size: ${pokemonList.size}")
+                Log.i("MainViewModel", "Page: ${page}")
+                return@PaginatorImpl null
+            }
+            return@PaginatorImpl ++page
+
+            //with Response Count Size = Api Pokemon MAX
+            /*Check if count is null and if reached to end elements*//*
             val count = responseBody.count
             Log.w("MainViewModel", "getNextKey responseBody Count: $count")
             if (count != null) {
@@ -65,7 +76,7 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
                 }
             } else {
                 return@PaginatorImpl null
-            }
+            }*/
         }
     )
 
@@ -78,4 +89,5 @@ class MainViewModel @Inject constructor(private val pokemonRepository: PokemonRe
             paginator.loadNextItems()
         }
     }
+
 }

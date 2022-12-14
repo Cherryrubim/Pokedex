@@ -8,7 +8,7 @@ import com.squareup.moshi.Types
 import javax.inject.Inject
 
 @ProvidedTypeConverter
-class TypeConverter @Inject constructor(private val moshi: Moshi){
+class TypeConverter @Inject constructor(private val moshi: Moshi) {
 
     val listType = Types.newParameterizedType(List::class.java, PokemonInfo.TypeXX::class.java)
     val adapter = moshi.adapter<List<PokemonInfo.TypeXX>>(listType)

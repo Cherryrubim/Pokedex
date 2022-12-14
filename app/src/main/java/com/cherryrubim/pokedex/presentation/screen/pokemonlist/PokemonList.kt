@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.toArgb
 import com.cherryrubim.pokedex.presentation.screen.destinations.PokemonDetailDestination
 
 import com.cherryrubim.pokedex.util.isLastItemVisible
+import com.cherryrubim.pokedex.util.isLastItemVisibleByKey
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
@@ -42,9 +43,10 @@ fun PokemonList(
     val TAG = "PokemonList"
     val state = viewmodel.state
     val listState = rememberLazyGridState()
-    val isLastItemVisible by remember {
+    val isLastItemVisible by remember(state) {
         derivedStateOf {
-            listState.isLastItemVisible()
+            //listState.isLastItemVisible()
+            listState.isLastItemVisibleByKey(key = state.lastItemID)
         }
     }
 
