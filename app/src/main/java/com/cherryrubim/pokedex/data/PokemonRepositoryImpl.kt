@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2022. Designed and developed by Cherryrubim
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.cherryrubim.pokedex.data
 
 import android.util.Log
@@ -7,7 +23,7 @@ import com.cherryrubim.pokedex.data.local.mapper.toEntity
 import com.cherryrubim.pokedex.data.remote.PokemonAPI
 import com.cherryrubim.pokedex.domain.model.PokemonInfo
 import com.cherryrubim.pokedex.domain.model.Pokemon
-import com.cherryrubim.pokedex.domain.model.SpeciesInfo
+import com.cherryrubim.pokedex.domain.model.PokemonSpecies
 import com.cherryrubim.pokedex.domain.repository.PokemonRepository
 import com.cherryrubim.pokedex.util.Resource
 import kotlinx.coroutines.flow.*
@@ -51,13 +67,13 @@ class PokemonRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPokemon(name: String): Flow<Resource<PokemonInfo>> = flow {
+    override fun getPokemonInfo(name: String): Flow<Resource<PokemonInfo>> = flow {
         val TAG_FUNTION = "GetPokemon"
 
         emit(Resource.Loading())
         try {
 
-            val localData = database.pokemonInfoDao().getPokemonInfo(id = name)
+            val localData = database.pokemonInfoDao().getPokemonInfo(name = name)
             if (localData == null) {
                 val remoteData = api.getPokemon(name)
                 Log.i(TAG, "Remote Data: ${remoteData}")
@@ -70,8 +86,6 @@ class PokemonRepositoryImpl @Inject constructor(
                 emit(Resource.Success(localData.toDomain()))
             }
 
-
-            emit(Resource.Success(api.getPokemon(name)))
         } catch (e: IOException) {
             Log.e(TAG, "$TAG_FUNTION Error IO: ${e}")
             emit(Resource.Error(e))
@@ -81,29 +95,25 @@ class PokemonRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPokemonDescription(name: String): Flow<Resource<SpeciesInfo>> = flow {
+    override fun getPokemonDescription(name: String): Flow<Resource<PokemonSpecies>> = flow {
         val TAG_FUNTION = "GetPokemonDescription"
 
         emit(Resource.Loading())
         try {
-            Log.w(TAG, "$TAG_FUNTION Finish Delay...")
-            emit(Resource.Success(api.getPokemonDescription(name)))
-        } catch (e: IOException) {
-            Log.e(TAG, "$TAG_FUNTION Error IO: ${e}")
-            emit(Resource.Error(e))
-        } catch (e: HttpException) {
-            Log.e(TAG, "$TAG_FUNTION Error Http: ${e}")
-            emit(Resource.Error(e))
-        }
-    }
 
-    fun <T> request(TAG_FUNTION: String, data: T, DELAY_DEBUG: Long = 0) = flow {
-        emit(Resource.Loading())
-        try {
-            //delay(DELAY_DEBUG)
-            val result = data
-            Log.e(TAG, "$TAG_FUNTION SUCCESS: ${result}")
-            emit(Resource.Success(data))
+            val localData = database.pokemonSpeciesDao().getPokemonDescription(name = name)
+            if (localData == null) {
+                val remoteData = api.getPokemonDescription(name)
+                Log.i(TAG, "Remote Data: ${remoteData}")
+
+                database.pokemonSpeciesDao().InsertPokemonDescription(remoteData.copy(name = name).toEntity())
+                Log.i(TAG, "LocalData Save: ${database.pokemonSpeciesDao().getPokemonDescription(name = name)}")
+
+                emit(Resource.Success(database.pokemonSpeciesDao().getPokemonDescription(name = name)?.toDomain()))
+            }else{
+                emit(Resource.Success(localData.toDomain()))
+            }
+
         } catch (e: IOException) {
             Log.e(TAG, "$TAG_FUNTION Error IO: ${e}")
             emit(Resource.Error(e))

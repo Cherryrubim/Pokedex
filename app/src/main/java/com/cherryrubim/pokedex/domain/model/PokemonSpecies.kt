@@ -14,11 +14,27 @@
  * limitations under the License.
  */
 
-package com.cherryrubim.pokedex.data.paging
+package com.cherryrubim.pokedex.domain.model
 
-interface Paginator<Key, Item >{
+import com.squareup.moshi.JsonClass
 
-    suspend fun loadNextItems()
-    suspend fun reset()
+@JsonClass(generateAdapter = true)
+data class PokemonSpecies(
+    val name: String = "",
+    val flavor_text_entries: List<FlavorTextEntry> = emptyList()
+    /*val form_descriptions: List<FormDescription> = emptyList()*/
+){
+    @JsonClass(generateAdapter = true)
+    data class FlavorTextEntry(
+        val flavor_text: String,
+        val language: Language,
+        val version: Version
+    )
+
+/*    @JsonClass(generateAdapter = true)
+    data class FormDescription(
+        val description: String,
+        val language: Language
+    )*/
 
 }
