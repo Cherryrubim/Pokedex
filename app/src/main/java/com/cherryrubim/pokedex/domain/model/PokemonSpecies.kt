@@ -21,7 +21,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class PokemonSpecies(
     val name: String = "",
-    val flavor_text_entries: List<FlavorTextEntry> = emptyList()
+    val flavor_text_entries: List<FlavorTextEntry?> = emptyList()
     /*val form_descriptions: List<FormDescription> = emptyList()*/
 ){
     @JsonClass(generateAdapter = true)

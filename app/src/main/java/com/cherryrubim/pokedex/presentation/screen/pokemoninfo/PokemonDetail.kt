@@ -30,13 +30,13 @@ import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.cherryrubim.pokedex.R
+import com.cherryrubim.pokedex.core.AppConstants.LANGUAGE
 import com.cherryrubim.pokedex.domain.model.*
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.component.*
 import com.cherryrubim.pokedex.ui.theme.Raleway
@@ -49,6 +49,7 @@ import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.components.rememberImageComponent
 import com.skydoves.landscapist.palette.PalettePlugin
+import java.util.*
 
 @Destination
 @Composable
@@ -92,7 +93,7 @@ fun PokemonDetail(
         if (state.pokemonDescription != null) {
             with(state.pokemonDescription) {
                 val pokemonDescription =
-                    flavor_text_entries.find { flavorTextEntry -> flavorTextEntry.language.name == "es" && flavorTextEntry.version.name == "sword" }
+                    flavor_text_entries.find { flavorTextEntry -> flavorTextEntry?.language?.name == LANGUAGE }
                 if (pokemonDescription != null) {
                     return@remember pokemonDescription
                 } else {
@@ -117,6 +118,13 @@ fun PokemonDetail(
                 color = colorSchemeBackground,
                 darkIcons = useDarkIcons
             )
+
+            systemUiController.setSystemBarsColor(
+                color = Color.Transparent,
+                darkIcons = useDarkIcons
+            ){
+                Color.White
+            }
         }
     }
 
@@ -201,8 +209,6 @@ fun PokemonDetail(
                     }
                 )
             }
-
-            Spacer(modifier = Modifier.size(8.dp))
 
             PokemonDescriptor(
                 modifier = modifier,

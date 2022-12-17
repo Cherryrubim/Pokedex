@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.cherryrubim.pokedex.core
+package com.cherryrubim.pokedex.data.local
 
-import android.app.Application
-import com.cherryrubim.pokedex.R
-import java.util.*
-import javax.inject.Inject
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.cherryrubim.pokedex.data.local.entity.PokemonSpeciesEntity
 
+@Dao
+interface PokemonSpeciesDao {
 
-object AppConstants  {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun InsertPokemonDescription(pokemonSpecies: PokemonSpeciesEntity)
 
-    /*API URL*/
-    const val BASE_URL = "https://pokeapi.co/api/v2/"
-
-    const val IMAGE_POKEMON_URI = ""
-
-    /*Limit of Pokemons gets from Api*/
-    const val LIMIT_POKEMONS = 20
-
-    var LANGUAGE = Locale.getDefault().language
+    @Query("SELECT * FROM PokemonSpeciesEntity WHERE name = :name")
+    suspend fun getPokemonDescription(name: String): PokemonSpeciesEntity?
 }

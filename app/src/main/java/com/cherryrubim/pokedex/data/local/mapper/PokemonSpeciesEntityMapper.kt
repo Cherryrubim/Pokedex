@@ -14,23 +14,21 @@
  * limitations under the License.
  */
 
-package com.cherryrubim.pokedex.core
+package com.cherryrubim.pokedex.data.local.mapper
 
-import android.app.Application
-import com.cherryrubim.pokedex.R
-import java.util.*
-import javax.inject.Inject
+import com.cherryrubim.pokedex.data.local.entity.PokemonSpeciesEntity
+import com.cherryrubim.pokedex.domain.model.PokemonSpecies
 
+fun PokemonSpeciesEntity.toDomain(): PokemonSpecies{
+    return PokemonSpecies(
+        name = this.name,
+        flavor_text_entries = this.flavor_text_entries
+    )
+}
 
-object AppConstants  {
-
-    /*API URL*/
-    const val BASE_URL = "https://pokeapi.co/api/v2/"
-
-    const val IMAGE_POKEMON_URI = ""
-
-    /*Limit of Pokemons gets from Api*/
-    const val LIMIT_POKEMONS = 20
-
-    var LANGUAGE = Locale.getDefault().language
+fun PokemonSpecies.toEntity(): PokemonSpeciesEntity{
+    return PokemonSpeciesEntity(
+        name = this.name,
+        flavor_text_entries = this.flavor_text_entries
+    )
 }

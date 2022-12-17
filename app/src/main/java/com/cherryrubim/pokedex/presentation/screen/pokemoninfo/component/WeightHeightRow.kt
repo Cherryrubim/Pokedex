@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +36,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
@@ -43,6 +45,8 @@ import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailStat
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.cherryrubim.pokedex.R
+import com.cherryrubim.pokedex.domain.model.PokemonInfo
+import com.cherryrubim.pokedex.ui.theme.PokedexTheme
 
 @Composable
 fun WeightHeightRow(
@@ -51,7 +55,7 @@ fun WeightHeightRow(
     colorBackground: Color = Color.White,
     tintIcon: Color = SnolaxColor,
     roundedCornerShape: RoundedCornerShape = RoundedCornerShape(15.dp),
-    horizontalPadding: Dp = 20.dp,
+    horizontalPadding: Dp = 12.dp,
     iconSpace: Dp = 4.dp
 ) {
 
@@ -85,11 +89,13 @@ fun WeightHeightRow(
 
         Box(
             modifier = Modifier
+                .widthIn(130.dp)
                 .clip(roundedCornerShape)
                 .background(colorBackground)
         ) {
             Column(
                 modifier = Modifier
+                    .align(Alignment.Center)
                     .padding(horizontalPadding, vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -141,11 +147,13 @@ fun WeightHeightRow(
 
         Box(
             modifier = Modifier
+                .widthIn(130.dp)
                 .clip(roundedCornerShape)
                 .background(colorBackground)
         ) {
             Column(
                 modifier = Modifier
+                    .align(Alignment.Center)
                     .padding(horizontalPadding, vertical = 2.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -186,5 +194,13 @@ fun WeightHeightRow(
                 )
             }
         }
+    }
+}
+
+@Composable
+@Preview
+fun WeightHeightRowPreview(){
+    PokedexTheme() {
+        WeightHeightRow(state = PokemonDetailState(PokemonInfo(weight = 100, height = 19)))
     }
 }

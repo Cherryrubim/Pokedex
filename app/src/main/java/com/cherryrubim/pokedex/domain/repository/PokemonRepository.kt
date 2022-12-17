@@ -28,6 +28,6 @@ interface PokemonRepository {
 
     fun getPokemonInfo(name: String): Flow<Resource<PokemonInfo>>
 
-    fun getPokemonDescription(name: String): Flow<Resource<PokemonSpecies>>
+    fun getPokemonSpecies(name: String): Flow<Resource<PokemonSpecies>>
 
 }

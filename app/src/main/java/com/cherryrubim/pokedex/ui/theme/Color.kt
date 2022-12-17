@@ -31,7 +31,10 @@ val GrayLight = Color(0xFFCECECE)
 val GrayNormal= Color(0xFFA1A1A1)
 
 val SnolaxColor = Color(0xFF5D94A7)
+val SnolaxColorBold = Color(0xFF297491)
 val SnolaxBackgroundColor = Color(0xFFD9F5FF)
+
+val LighGray = Color(0xFF3A3A3A)
 
 
 //Pokemon Type Colors

@@ -56,7 +56,7 @@ class PokemonInfoViewModel @Inject constructor(
 
 
                 val pokemonInfoFlow = pokemonRepository.getPokemonInfo(pokemonName)
-                val pokemonDescriptionFlow = pokemonRepository.getPokemonDescription(pokemonName)
+                val pokemonDescriptionFlow = pokemonRepository.getPokemonSpecies(pokemonName)
 
                 state = state.copy(isLoading = true)
                 pokemonInfoFlow.zip(pokemonDescriptionFlow) { pokemonInfoResult, pokemonDescriptionResult ->
@@ -74,7 +74,7 @@ class PokemonInfoViewModel @Inject constructor(
                             pokemonDescriptionResource is Resource.Success
                         ) {
                             Log.i(TAG, pokemonInfoResource.data.toString())
-                            Log.i(TAG, pokemonDescriptionResource.data?.flavor_text_entries?.find { it.version.name == "sword" && it.language.name == "es" }.toString())
+                            Log.i(TAG, pokemonDescriptionResource.data?.flavor_text_entries?.find { it?.version?.name == "sword" && it.language.name == "es" }.toString())
                             state = PokemonDetailState(
                                 pokemonInfo = pokemonInfoResource.data,
                                 pokemonDescription = pokemonDescriptionResource.data,

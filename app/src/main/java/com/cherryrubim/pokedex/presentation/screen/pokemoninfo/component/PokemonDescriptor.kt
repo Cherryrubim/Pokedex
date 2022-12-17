@@ -26,27 +26,38 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.cherryrubim.pokedex.domain.model.PokemonSpecies.FlavorTextEntry
 import com.cherryrubim.pokedex.presentation.screen.pokemoninfo.PokemonDetailState
 import com.cherryrubim.pokedex.ui.theme.Raleway
 import com.cherryrubim.pokedex.ui.theme.SnolaxColor
 import com.cherryrubim.pokedex.util.removeDuplicateSpace
+import com.cherryrubim.pokedex.R
+import com.cherryrubim.pokedex.domain.model.Language
+import com.cherryrubim.pokedex.domain.model.Version
+import com.cherryrubim.pokedex.ui.theme.LighGray
+import com.cherryrubim.pokedex.ui.theme.SnolaxColorBold
 
 @Composable
 fun PokemonDescriptor(
     modifier: Modifier = Modifier,
     state: PokemonDetailState = PokemonDetailState(),
     flavorTextEntry: FlavorTextEntry? = null,
-    cornerSize: Dp = 10.dp,
+    cornerSize: Dp = 18.dp,
     horizontalPaddingText: Dp = 15.dp,
     topPaddingText: Dp = 18.dp,
-    bottomPaddingText: Dp = 12.dp,
-    backgroundColorTitle: Color = Color.Black,
+    bottomPaddingText: Dp = 8.dp,
+    backgroundColorTitle: Color = LighGray,
     backgroundColor: Color = Color.White,
     textColor: Color = Color.Black,
 ) {
@@ -74,7 +85,7 @@ fun PokemonDescriptor(
         }
 
         flavorTextEntry?.let {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(cornerSize))
@@ -83,32 +94,13 @@ fun PokemonDescriptor(
             ) {
 
                 Text(
-                    modifier = Modifier.padding(
-                        start = horizontalPaddingText,
-                        end = horizontalPaddingText,
-                        top = topPaddingText,
-                        bottom = bottomPaddingText
-                    ),
-                    text = it.flavor_text.removeDuplicateSpace(),
-                    fontFamily = Raleway,
-                    color = textColor,
-                    maxLines = 8
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .offset(x = 10.dp, y = -12.dp)
-                    .clip(RoundedCornerShape(20.dp))
-                    .background(backgroundColorTitle)
-                    .align(Alignment.TopStart)
-            ) {
-                Text(
                     modifier = Modifier
-                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                        .padding(horizontal = 15.dp, vertical = 6.dp),
                     text = "Pokédex ${it.version.name.capitalize()}",
-                    color = SnolaxColor,
+                    color = SnolaxColorBold,
                     fontFamily = Raleway,
+                    fontSize = 17.sp,
+                    fontWeight = FontWeight.Medium,
                     style = TextStyle(
                         lineHeight = 2.5.em,
                         platformStyle = PlatformTextStyle(
@@ -116,7 +108,54 @@ fun PokemonDescriptor(
                         )
                     )
                 )
+
+                Text(
+                    modifier = Modifier.padding(
+                        start = horizontalPaddingText,
+                        end = horizontalPaddingText,
+                        bottom = bottomPaddingText
+                    ),
+                    text = it.flavor_text.removeDuplicateSpace(),
+                    fontFamily = Raleway,
+                    color = textColor,
+                    maxLines = 8,
+                    style = TextStyle(
+                        lineHeight = 1.2.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false,
+                        )
+                    )
+                )
             }
+
+/*            Box(
+                modifier = Modifier
+                    .offset(x = 6.dp, y = (-16).dp)
+                    .clip(RoundedCornerShape(cornerSize))
+                    .background(backgroundColorTitle)
+                    .align(Alignment.TopStart)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(horizontal = 14.dp, vertical = 7.dp),
+                    text = "Pokédex ${it.version.name.capitalize()}",
+                    color = SnolaxColor,
+                    fontFamily = Raleway,
+                    fontWeight = FontWeight.Medium,
+                    style = TextStyle(
+                        lineHeight = 2.5.em,
+                        platformStyle = PlatformTextStyle(
+                            includeFontPadding = false,
+                        )
+                    )
+                )
+            }*/
         }
     }
+}
+
+@Composable
+@Preview(backgroundColor = 0x93C9AD, showBackground = true, device = Devices.NEXUS_5)
+fun PokemonDescriptorPreview(){
+    PokemonDescriptor(flavorTextEntry = FlavorTextEntry(stringResource(id = R.string.lorem_ipsum), language = Language("es"), Version("Shield")))
 }

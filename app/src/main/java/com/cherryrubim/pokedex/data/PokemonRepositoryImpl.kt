@@ -17,7 +17,9 @@
 package com.cherryrubim.pokedex.data
 
 import android.util.Log
+import com.cherryrubim.pokedex.core.AppConstants.LANGUAGE
 import com.cherryrubim.pokedex.data.local.AppDatabase
+import com.cherryrubim.pokedex.data.local.entity.PokemonSpeciesEntity
 import com.cherryrubim.pokedex.data.local.mapper.toDomain
 import com.cherryrubim.pokedex.data.local.mapper.toEntity
 import com.cherryrubim.pokedex.data.remote.PokemonAPI
@@ -29,6 +31,7 @@ import com.cherryrubim.pokedex.util.Resource
 import kotlinx.coroutines.flow.*
 import retrofit2.HttpException
 import java.io.IOException
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -95,20 +98,25 @@ class PokemonRepositoryImpl @Inject constructor(
         }
     }
 
-    override fun getPokemonDescription(name: String): Flow<Resource<PokemonSpecies>> = flow {
+    override fun getPokemonSpecies(name: String): Flow<Resource<PokemonSpecies>> = flow {
         val TAG_FUNTION = "GetPokemonDescription"
 
         emit(Resource.Loading())
         try {
-
             val localData = database.pokemonSpeciesDao().getPokemonDescription(name = name)
-            if (localData == null) {
+            val isContainLanguage = localData?.flavor_text_entries?.any { it?.language?.name == LANGUAGE }
+
+            if (localData == null || isContainLanguage == false) {
                 val remoteData = api.getPokemonDescription(name)
-                Log.i(TAG, "Remote Data: ${remoteData}")
 
-                database.pokemonSpeciesDao().InsertPokemonDescription(remoteData.copy(name = name).toEntity())
+                /* Only save in Database for Pokemon recent version and a flavorText
+                *  Corresponding to the language of the device. */
+                val flavorTextEntryFilter = remoteData.flavor_text_entries.reversed().find { it?.language?.name.toString() == LANGUAGE}
+                val toEntity = PokemonSpeciesEntity(name = name, flavor_text_entries = listOf(flavorTextEntryFilter))
+                Log.i(TAG, "Remote Data: $toEntity")
+
+                database.pokemonSpeciesDao().InsertPokemonDescription(toEntity)
                 Log.i(TAG, "LocalData Save: ${database.pokemonSpeciesDao().getPokemonDescription(name = name)}")
-
                 emit(Resource.Success(database.pokemonSpeciesDao().getPokemonDescription(name = name)?.toDomain()))
             }else{
                 emit(Resource.Success(localData.toDomain()))
